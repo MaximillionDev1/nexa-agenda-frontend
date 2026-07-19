@@ -56,7 +56,7 @@ export interface ICreateAppointmentRequest {
 
 export interface ILookupAppointmentRequest {
   publicCode: string;
-  customerPhone: string;
+  customerPhone?: string;
 }
 
 export interface IDashboardStats {

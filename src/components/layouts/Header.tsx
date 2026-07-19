@@ -24,19 +24,19 @@ export function Header() {
             to="/"
             className="text-sm font-medium text-text hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-2 py-1"
           >
-            Home
+            Início
           </Link>
           <Link
             to="/scheduling"
             className="text-sm font-medium text-text hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-2 py-1"
           >
-            Schedule
+            Agendar
           </Link>
           <Link
             to="/lookup"
             className="text-sm font-medium text-text hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-2 py-1"
           >
-            Check Status
+            Consultar Agendamento
           </Link>
           <Link
             to="/admin/login"
@@ -51,7 +51,7 @@ export function Header() {
           type="button"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden p-2 hover:bg-background rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          aria-label="Toggle navigation menu"
+          aria-label="Alternar menu de navegação"
           aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -73,21 +73,21 @@ export function Header() {
                 onClick={() => setIsMenuOpen(false)}
                 className="px-4 py-3 text-base font-medium text-text hover:bg-background rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
-                Home
+                Início
               </Link>
               <Link
                 to="/scheduling"
                 onClick={() => setIsMenuOpen(false)}
                 className="px-4 py-3 text-base font-medium text-text hover:bg-background rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
-                Schedule
+                Agendar
               </Link>
               <Link
                 to="/lookup"
                 onClick={() => setIsMenuOpen(false)}
                 className="px-4 py-3 text-base font-medium text-text hover:bg-background rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
-                Check Status
+                Consultar Agendamento
               </Link>
               <Link
                 to="/admin/login"

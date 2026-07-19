@@ -16,25 +16,25 @@ export function Footer() {
               <div>
                 <h3 className="font-bold text-lg text-text">Nexa Agenda</h3>
                 <p className="text-xs sm:text-sm text-text-secondary">
-                  Service scheduling platform
+                  Plataforma de agendamento
                 </p>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-text-secondary">
-              Make scheduling easy and efficient for your business.
+              Facilitando agendamentos para seu negócio com eficiência e praticidade.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Links Rápidos */}
           <div>
-            <h4 className="font-semibold text-text mb-4">Quick Links</h4>
+            <h4 className="font-semibold text-text mb-4">Links Rápidos</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   to="/"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Home
+                  Início
                 </Link>
               </li>
               <li>
@@ -42,7 +42,7 @@ export function Footer() {
                   to="/scheduling"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Schedule Service
+                  Agendar Serviço
                 </Link>
               </li>
               <li>
@@ -50,7 +50,7 @@ export function Footer() {
                   to="/lookup"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Check Appointment
+                  Consultar Agendamento
                 </Link>
               </li>
               <li>
@@ -58,15 +58,15 @@ export function Footer() {
                   to="/admin/login"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Admin Area
+                  Área Admin
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Suporte */}
           <div>
-            <h4 className="font-semibold text-text mb-4">Support</h4>
+            <h4 className="font-semibold text-text mb-4">Suporte</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <Phone
@@ -101,7 +101,7 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <span className="text-text-secondary">
-                  São Paulo, SP, Brazil
+                  São Paulo, SP, Brasil
                 </span>
               </li>
             </ul>
@@ -116,7 +116,7 @@ export function Footer() {
                   type="button"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Privacy Policy
+                  Política de Privacidade
                 </button>
               </li>
               <li>
@@ -124,7 +124,7 @@ export function Footer() {
                   type="button"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Terms of Service
+                  Termos de Serviço
                 </button>
               </li>
               <li>
@@ -132,7 +132,7 @@ export function Footer() {
                   type="button"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
                 >
-                  Cookie Policy
+                  Política de Cookies
                 </button>
               </li>
             </ul>
@@ -145,10 +145,10 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-text-secondary">
           <p>
-            &copy; {currentYear} Nexa Agenda. All rights reserved.
+            &copy; {currentYear} Nexa Agenda. Todos os direitos reservados.
           </p>
           <p>
-            Built with <span className="text-primary">❤️</span> for better scheduling
+            Desenvolvido com <span className="text-primary">❤️</span> para melhor agendamento
           </p>
         </div>
       </div>
