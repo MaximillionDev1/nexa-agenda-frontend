@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
 interface PublicLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function PublicLayout({ children }: PublicLayoutProps) {
@@ -16,10 +16,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
               <div className="text-sm text-text-secondary">Agenda</div>
             </div>
             <nav className="flex gap-4">
-              <a
-                href="/"
-                className="text-text-secondary hover:text-text transition-colors"
-              >
+              <a href="/" className="text-text-secondary hover:text-text transition-colors">
                 Home
               </a>
               <a
@@ -28,10 +25,7 @@ export function PublicLayout({ children }: PublicLayoutProps) {
               >
                 Agendar
               </a>
-              <a
-                href="/lookup"
-                className="text-text-secondary hover:text-text transition-colors"
-              >
+              <a href="/lookup" className="text-text-secondary hover:text-text transition-colors">
                 Consultar
               </a>
             </nav>
@@ -87,5 +81,5 @@ export function PublicLayout({ children }: PublicLayoutProps) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

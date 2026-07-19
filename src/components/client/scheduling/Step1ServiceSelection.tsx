@@ -1,12 +1,12 @@
-import { motion } from 'framer-motion'
-import { useQuery } from '@tanstack/react-query'
-import { apiService } from '@/services/api'
-import type { IService } from '@/types'
-import { Scissors, Zap, Droplets, Check } from 'lucide-react'
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { apiService } from "@/services/api";
+import type { IService } from "@/types";
+import { Scissors, Zap, Droplets, Check } from "lucide-react";
 
 interface Step1ServiceSelectionProps {
-  selectedServiceId?: string
-  onSelectService: (serviceId: string) => void
+  selectedServiceId?: string;
+  onSelectService: (serviceId: string) => void;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -15,16 +15,16 @@ const iconMap: Record<string, React.ReactNode> = {
   Sparkles: <div className="text-xl">✨</div>,
   Droplets: <Droplets className="w-6 h-6" />,
   Check: <Check className="w-6 h-6" />,
-}
+};
 
 export function Step1ServiceSelection({
   selectedServiceId,
   onSelectService,
 }: Step1ServiceSelectionProps) {
   const { data: services = [], isLoading } = useQuery<IService[]>({
-    queryKey: ['services'],
+    queryKey: ["services"],
     queryFn: () => apiService.getServices(),
-  })
+  });
 
   if (isLoading) {
     return (
@@ -34,7 +34,7 @@ export function Step1ServiceSelection({
           <p className="text-text-secondary">Carregando serviços...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -50,16 +50,16 @@ export function Step1ServiceSelection({
             whileTap={{ scale: 0.98 }}
             className={`p-4 rounded-lg border-2 transition-all text-left ${
               selectedServiceId === service.id
-                ? 'border-primary bg-primary/10'
-                : 'border-card hover:border-primary/50'
+                ? "border-primary bg-primary/10"
+                : "border-card hover:border-primary/50"
             }`}
           >
             <div className="flex items-start gap-4">
               <div
                 className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                   selectedServiceId === service.id
-                    ? 'bg-primary text-white'
-                    : 'bg-primary/10 text-primary'
+                    ? "bg-primary text-white"
+                    : "bg-primary/10 text-primary"
                 }`}
               >
                 {iconMap[service.icon]}
@@ -67,26 +67,20 @@ export function Step1ServiceSelection({
 
               <div className="flex-1">
                 <h3 className="font-semibold mb-1">{service.name}</h3>
-                <p className="text-sm text-text-secondary mb-3">
-                  {service.description}
-                </p>
+                <p className="text-sm text-text-secondary mb-3">{service.description}</p>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">
-                    {service.duration}min
-                  </span>
+                  <span className="text-text-secondary">{service.duration}min</span>
                   <span className="font-semibold text-primary">
                     R$ {Number.parseFloat(service.price).toFixed(2)}
                   </span>
                 </div>
               </div>
 
-              {selectedServiceId === service.id && (
-                <div className="text-primary">✓</div>
-              )}
+              {selectedServiceId === service.id && <div className="text-primary">✓</div>}
             </div>
           </motion.button>
         ))}
       </div>
     </div>
-  )
+  );
 }

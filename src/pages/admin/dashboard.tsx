@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
-import { apiService } from '@/services/api'
-import type { IDashboardData } from '@/types'
+import { useQuery } from "@tanstack/react-query";
+import { apiService } from "@/services/api";
+import type { IDashboardData } from "@/types";
 
 export default function DashboardPage() {
   const { data: dashboard } = useQuery<IDashboardData>({
-    queryKey: ['dashboard'],
+    queryKey: ["dashboard"],
     queryFn: () => apiService.getDashboard(),
-  })
+  });
 
   return (
     <div className="p-8">
@@ -24,9 +24,7 @@ export default function DashboardPage() {
           </div>
           <div className="bg-card/50 border border-card rounded-lg p-6">
             <p className="text-text-secondary text-sm mb-2">Concluídos</p>
-            <p className="text-3xl font-bold text-primary-light">
-              {dashboard.stats.completed}
-            </p>
+            <p className="text-3xl font-bold text-primary-light">{dashboard.stats.completed}</p>
           </div>
           <div className="bg-card/50 border border-card rounded-lg p-6">
             <p className="text-text-secondary text-sm mb-2">Faturamento</p>
@@ -37,5 +35,5 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

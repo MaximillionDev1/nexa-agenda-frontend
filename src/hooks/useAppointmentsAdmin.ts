@@ -1,11 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiService } from '@/services/api';
-import { toast } from 'sonner';
-import type { IAppointment } from '@/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiService } from "@/services/api";
+import { toast } from "sonner";
+import type { IAppointment } from "@/types";
 
 export interface AppointmentsFilters {
   date?: string;
-  status?: 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED';
+  status?: "SCHEDULED" | "CONFIRMED" | "COMPLETED" | "CANCELED";
   serviceId?: string;
   customerName?: string;
   customerPhone?: string;
@@ -30,15 +30,15 @@ function parseAppointmentsResponse(response: unknown): AppointmentsResponse {
   // Se for um objeto com data
   if (
     response &&
-    typeof response === 'object' &&
-    'appointments' in response &&
-    'total' in response
+    typeof response === "object" &&
+    "appointments" in response &&
+    "total" in response
   ) {
     return response as AppointmentsResponse;
   }
 
   // Se for um objeto com data array
-  if (response && typeof response === 'object' && 'data' in response) {
+  if (response && typeof response === "object" && "data" in response) {
     const data = (response as { data: unknown }).data;
     if (Array.isArray(data)) {
       return {
@@ -60,7 +60,7 @@ export function useAppointmentsAdmin(filters: AppointmentsFilters = {}) {
 
   // Fetch appointments
   const appointmentsQuery = useQuery({
-    queryKey: ['appointments', filters],
+    queryKey: ["appointments", filters],
     queryFn: async () => {
       const response = await apiService.getAppointments(filters);
       return parseAppointmentsResponse(response);
@@ -70,16 +70,15 @@ export function useAppointmentsAdmin(filters: AppointmentsFilters = {}) {
 
   // Update status
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: IAppointment['status'] }) =>
+    mutationFn: ({ id, status }: { id: string; status: IAppointment["status"] }) =>
       apiService.updateAppointmentStatus(id, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Status atualizado com sucesso');
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Status atualizado com sucesso");
     },
     onError: (error: unknown) => {
       const apiError = error as { response?: { data?: { message?: string } } };
-      const message =
-        apiError?.response?.data?.message || 'Erro ao atualizar status';
+      const message = apiError?.response?.data?.message || "Erro ao atualizar status";
       toast.error(message);
     },
   });
@@ -88,13 +87,12 @@ export function useAppointmentsAdmin(filters: AppointmentsFilters = {}) {
   const cancelMutation = useMutation({
     mutationFn: (id: string) => apiService.cancelAppointment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Agendamento cancelado com sucesso');
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Agendamento cancelado com sucesso");
     },
     onError: (error: unknown) => {
       const apiError = error as { response?: { data?: { message?: string } } };
-      const message =
-        apiError?.response?.data?.message || 'Erro ao cancelar agendamento';
+      const message = apiError?.response?.data?.message || "Erro ao cancelar agendamento";
       toast.error(message);
     },
   });
@@ -103,13 +101,12 @@ export function useAppointmentsAdmin(filters: AppointmentsFilters = {}) {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => apiService.deleteAppointment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
-      toast.success('Agendamento deletado com sucesso');
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Agendamento deletado com sucesso");
     },
     onError: (error: unknown) => {
       const apiError = error as { response?: { data?: { message?: string } } };
-      const message =
-        apiError?.response?.data?.message || 'Erro ao deletar agendamento';
+      const message = apiError?.response?.data?.message || "Erro ao deletar agendamento";
       toast.error(message);
     },
   });

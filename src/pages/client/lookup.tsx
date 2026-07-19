@@ -1,4 +1,4 @@
-import { PublicLayout } from '@/layouts/PublicLayout'
+import { PublicLayout } from "@/layouts/PublicLayout";
 
 export default function LookupPage() {
   return (
@@ -10,5 +10,5 @@ export default function LookupPage() {
         </div>
       </div>
     </PublicLayout>
-  )
+  );
 }

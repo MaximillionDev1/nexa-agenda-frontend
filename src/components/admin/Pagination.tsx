@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -7,12 +7,7 @@ interface PaginationProps {
   loading?: boolean;
 }
 
-export function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  loading,
-}: PaginationProps) {
+export function Pagination({ currentPage, totalPages, onPageChange, loading }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -25,7 +20,8 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <button type="button"
+      <button
+        type="button"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || loading}
         className="p-2 hover:bg-background rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-card"
@@ -42,13 +38,14 @@ export function Pagination({
               {prevPage && page - prevPage > 1 && (
                 <span className="px-2 py-1 text-text-secondary">...</span>
               )}
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => onPageChange(page)}
                 disabled={loading}
                 className={`px-3 py-2 rounded-lg transition-colors border ${
                   currentPage === page
-                    ? 'bg-primary text-white border-primary'
-                    : 'border-card hover:bg-background'
+                    ? "bg-primary text-white border-primary"
+                    : "border-card hover:bg-background"
                 }`}
               >
                 {page}
@@ -58,7 +55,8 @@ export function Pagination({
         })}
       </div>
 
-      <button type="button"
+      <button
+        type="button"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || loading}
         className="p-2 hover:bg-background rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-card"

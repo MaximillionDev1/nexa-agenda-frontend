@@ -1,61 +1,54 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { format, isBefore, startOfToday } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { format, isBefore, startOfToday } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Step2DateSelectionProps {
-  selectedDate?: string
-  onSelectDate: (date: string) => void
+  selectedDate?: string;
+  onSelectDate: (date: string) => void;
 }
 
-export function Step2DateSelection({
-  selectedDate,
-  onSelectDate,
-}: Step2DateSelectionProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
-  const today = startOfToday()
+export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSelectionProps) {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const today = startOfToday();
 
   const getDaysInMonth = (date: Date) => {
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-    const days: (Date | null)[] = []
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const days: (Date | null)[] = [];
 
     for (let i = 0; i < firstDay.getDay(); i++) {
-      days.push(null)
+      days.push(null);
     }
 
     for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push(new Date(date.getFullYear(), date.getMonth(), i))
+      days.push(new Date(date.getFullYear(), date.getMonth(), i));
     }
 
-    return days
-  }
+    return days;
+  };
 
-  const days = getDaysInMonth(currentMonth)
-  const monthName = format(currentMonth, 'MMMM yyyy', { locale: ptBR })
+  const days = getDaysInMonth(currentMonth);
+  const monthName = format(currentMonth, "MMMM yyyy", { locale: ptBR });
 
   const isValidDay = (date: Date | null) => {
-    if (!date) return false
-    const dayOfWeek = date.getDay()
-    return dayOfWeek !== 0 && !isBefore(date, today)
-  }
+    if (!date) return false;
+    const dayOfWeek = date.getDay();
+    return dayOfWeek !== 0 && !isBefore(date, today);
+  };
 
   const handleSelectDate = (date: Date) => {
-    onSelectDate(format(date, 'yyyy-MM-dd'))
-  }
+    onSelectDate(format(date, "yyyy-MM-dd"));
+  };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
-    )
-  }
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
 
   const handleNextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
-    )
-  }
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
 
   return (
     <div className="space-y-6">
@@ -86,11 +79,8 @@ export function Step2DateSelection({
 
       {/* Dias da Semana */}
       <div className="grid grid-cols-7 gap-2 mb-4">
-        {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map((day) => (
-          <div
-            key={day}
-            className="text-center text-sm font-semibold text-text-secondary py-2"
-          >
+        {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"].map((day) => (
+          <div key={day} className="text-center text-sm font-semibold text-text-secondary py-2">
             {day}
           </div>
         ))}
@@ -99,9 +89,9 @@ export function Step2DateSelection({
       {/* Calendário */}
       <div className="grid grid-cols-7 gap-2">
         {days.map((date, index) => {
-          const dateKey = date ? format(date, 'yyyy-MM-dd') : `empty-${index}`
-          const isValid = isValidDay(date)
-          const isSelected = date && selectedDate === format(date, 'yyyy-MM-dd')
+          const dateKey = date ? format(date, "yyyy-MM-dd") : `empty-${index}`;
+          const isValid = isValidDay(date);
+          const isSelected = date && selectedDate === format(date, "yyyy-MM-dd");
 
           return (
             <motion.button
@@ -109,7 +99,7 @@ export function Step2DateSelection({
               type="button"
               onClick={() => {
                 if (date && isValid) {
-                  handleSelectDate(date)
+                  handleSelectDate(date);
                 }
               }}
               disabled={!isValid}
@@ -117,22 +107,18 @@ export function Step2DateSelection({
               whileTap={isValid ? { scale: 0.95 } : {}}
               className={`p-3 rounded-lg text-sm font-medium transition-all ${
                 !date
-                  ? 'invisible'
+                  ? "invisible"
                   : isSelected
-                    ? 'bg-primary text-white'
+                    ? "bg-primary text-white"
                     : isValid
-                      ? 'bg-card hover:bg-card border border-card hover:border-primary cursor-pointer'
-                      : 'bg-card/30 text-text-secondary/50 cursor-not-allowed opacity-50'
+                      ? "bg-card hover:bg-card border border-card hover:border-primary cursor-pointer"
+                      : "bg-card/30 text-text-secondary/50 cursor-not-allowed opacity-50"
               }`}
-              aria-label={
-                date
-                  ? format(date, 'dd/MM/yyyy', { locale: ptBR })
-                  : undefined
-              }
+              aria-label={date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : undefined}
             >
-              {date ? date.getDate() : ''}
+              {date ? date.getDate() : ""}
             </motion.button>
-          )
+          );
         })}
       </div>
 
@@ -141,10 +127,10 @@ export function Step2DateSelection({
         <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
           <p className="text-sm text-text-secondary">Data selecionada:</p>
           <p className="text-lg font-semibold text-primary">
-            {format(new Date(selectedDate), 'dd/MM/yyyy', { locale: ptBR })}
+            {format(new Date(selectedDate), "dd/MM/yyyy", { locale: ptBR })}
           </p>
         </div>
       )}
     </div>
-  )
+  );
 }

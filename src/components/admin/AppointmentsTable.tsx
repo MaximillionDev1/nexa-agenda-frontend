@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useState } from "react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import {
   AlertCircle,
   CheckCircle2,
@@ -9,14 +9,14 @@ import {
   Phone,
   Mail,
   Loader2,
-} from 'lucide-react';
-import type { IAppointment } from '@/types';
-import { AppointmentStatusBadge } from './AppointmentStatusBadge';
-import { motion, AnimatePresence } from 'framer-motion';
+} from "lucide-react";
+import type { IAppointment } from "@/types";
+import { AppointmentStatusBadge } from "./AppointmentStatusBadge";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AppointmentsTableProps {
   appointments: IAppointment[];
-  onStatusChange: (id: string, status: IAppointment['status']) => void;
+  onStatusChange: (id: string, status: IAppointment["status"]) => void;
   onCancel: (id: string) => void;
   onDelete: (id: string) => void;
   loading?: boolean;
@@ -67,9 +67,7 @@ export function AppointmentsTable({
             <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
               Status
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
-              Ações
-            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -100,18 +98,16 @@ export function AppointmentsTable({
                 </td>
                 <td className="px-4 py-3">
                   <p className="font-medium text-text">{appointment.service.name}</p>
-                  <p className="text-sm text-text-secondary">
-                    {appointment.service.duration} min
-                  </p>
+                  <p className="text-sm text-text-secondary">{appointment.service.duration} min</p>
                 </td>
                 <td className="px-4 py-3">
                   <p className="text-text">
-                    {format(new Date(appointment.appointmentDate), 'dd MMM yyyy', {
+                    {format(new Date(appointment.appointmentDate), "dd MMM yyyy", {
                       locale: ptBR,
                     })}
                   </p>
                   <p className="text-sm text-text-secondary">
-                    {format(new Date(appointment.appointmentDate), 'HH:mm')}
+                    {format(new Date(appointment.appointmentDate), "HH:mm")}
                   </p>
                 </td>
                 <td className="px-4 py-3">
@@ -119,7 +115,8 @@ export function AppointmentsTable({
                 </td>
                 <td className="px-4 py-3">
                   <div className="relative">
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() =>
                         setOpenMenuId(openMenuId === appointment.id ? null : appointment.id)
                       }
@@ -138,10 +135,11 @@ export function AppointmentsTable({
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
                           className="absolute right-0 top-full mt-2 bg-card border border-card rounded-lg shadow-lg py-2 z-50 min-w-56"
                         >
-                          {appointment.status !== 'CONFIRMED' && (
-                            <button type="button"
+                          {appointment.status !== "CONFIRMED" && (
+                            <button
+                              type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, 'CONFIRMED');
+                                onStatusChange(appointment.id, "CONFIRMED");
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
@@ -155,10 +153,11 @@ export function AppointmentsTable({
                               Confirmar
                             </button>
                           )}
-                          {appointment.status !== 'COMPLETED' && (
-                            <button type="button"
+                          {appointment.status !== "COMPLETED" && (
+                            <button
+                              type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, 'COMPLETED');
+                                onStatusChange(appointment.id, "COMPLETED");
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
@@ -172,8 +171,9 @@ export function AppointmentsTable({
                               Marcar Concluído
                             </button>
                           )}
-                          {appointment.status !== 'CANCELED' && (
-                            <button type="button"
+                          {appointment.status !== "CANCELED" && (
+                            <button
+                              type="button"
                               onClick={() => {
                                 onCancel(appointment.id);
                                 setOpenMenuId(null);
@@ -190,7 +190,8 @@ export function AppointmentsTable({
                             </button>
                           )}
                           <hr className="my-2 border-border" />
-                          <button type="button"
+                          <button
+                            type="button"
                             onClick={() => {
                               onDelete(appointment.id);
                               setOpenMenuId(null);

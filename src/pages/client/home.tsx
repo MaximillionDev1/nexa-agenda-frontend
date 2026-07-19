@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
-import { PublicLayout } from '@/layouts/PublicLayout'
-import { PremiumHero } from '@/components/client/PremiumHero'
-import { Button } from '@/components/ui/Button'
-import { apiService } from '@/services/api'
-import type { IService, INextAvailableSlot } from '@/types'
-import { Clock, MapPin, Scissors, Zap, Droplets, Check } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useQuery } from "@tanstack/react-query";
+import { PublicLayout } from "@/layouts/PublicLayout";
+import { PremiumHero } from "@/components/client/PremiumHero";
+import { Button } from "@/components/ui/Button";
+import { apiService } from "@/services/api";
+import type { IService, INextAvailableSlot } from "@/types";
+import { Clock, MapPin, Scissors, Zap, Droplets, Check } from "lucide-react";
+import { motion } from "framer-motion";
 
 const iconMap: Record<string, React.ReactNode> = {
   Scissors: <Scissors className="w-8 h-8" />,
@@ -13,18 +13,18 @@ const iconMap: Record<string, React.ReactNode> = {
   Sparkles: <div className="w-8 h-8">✨</div>,
   Droplets: <Droplets className="w-8 h-8" />,
   Check: <Check className="w-8 h-8" />,
-}
+};
 
 export default function HomePage() {
   const { data: services = [] } = useQuery<IService[]>({
-    queryKey: ['services'],
+    queryKey: ["services"],
     queryFn: () => apiService.getServices(),
-  })
+  });
 
   const { data: nextSlot } = useQuery<INextAvailableSlot>({
-    queryKey: ['nextAvailableSlot'],
+    queryKey: ["nextAvailableSlot"],
     queryFn: () => apiService.getNextAvailableSlot(),
-  })
+  });
 
   return (
     <PublicLayout>
@@ -43,7 +43,7 @@ export default function HomePage() {
             >
               <Clock className="w-5 h-5 text-primary" />
               <span>
-                Próximo horário:{' '}
+                Próximo horário:{" "}
                 <span className="font-semibold text-primary">{nextSlot.formatted}</span>
               </span>
             </motion.div>
@@ -86,7 +86,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-text-secondary">Preço</span>
                     <span className="font-medium text-primary">
-                     R$ {Number.parseFloat(service.price).toFixed(2)}
+                      R$ {Number.parseFloat(service.price).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -103,29 +103,27 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section className="py-20 bg-card/30">
         <div className="container-app">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Por que escolher Nexa Agenda?
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Por que escolher Nexa Agenda?</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                id: 'benefit-1',
-                icon: '⚡',
-                title: 'Rápido e Fácil',
-                description: 'Agende em poucos cliques, sem burocracia.',
+                id: "benefit-1",
+                icon: "⚡",
+                title: "Rápido e Fácil",
+                description: "Agende em poucos cliques, sem burocracia.",
               },
               {
-                id: 'benefit-2',
-                icon: '🔒',
-                title: 'Seguro',
-                description: 'Seus dados estão seguros e criptografados.',
+                id: "benefit-2",
+                icon: "🔒",
+                title: "Seguro",
+                description: "Seus dados estão seguros e criptografados.",
               },
               {
-                id: 'benefit-3',
-                icon: '📱',
-                title: 'Acessível',
-                description: 'Acesse de qualquer dispositivo, a qualquer hora.',
+                id: "benefit-3",
+                icon: "📱",
+                title: "Acessível",
+                description: "Acesse de qualquer dispositivo, a qualquer hora.",
               },
             ].map((benefit) => (
               <motion.div
@@ -155,11 +153,12 @@ export default function HomePage() {
 
             <div className="space-y-3">
               {[
-  { id: 'weekdays', day: 'Segunda a Sexta', hours: '09:00 - 18:00' },
-  { id: 'saturday', day: 'Sábado', hours: '09:00 - 16:00' },
-  { id: 'sunday', day: 'Domingo', hours: 'Fechado' },
-].map((schedule) => (
-  <div key={schedule.id}
+                { id: "weekdays", day: "Segunda a Sexta", hours: "09:00 - 18:00" },
+                { id: "saturday", day: "Sábado", hours: "09:00 - 16:00" },
+                { id: "sunday", day: "Domingo", hours: "Fechado" },
+              ].map((schedule) => (
+                <div
+                  key={schedule.id}
                   className="flex items-center justify-between pb-3 border-b border-card/50 last:border-0"
                 >
                   <span className="font-medium">{schedule.day}</span>
@@ -171,5 +170,5 @@ export default function HomePage() {
         </div>
       </section>
     </PublicLayout>
-  )
+  );
 }

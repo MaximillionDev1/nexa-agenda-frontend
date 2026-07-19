@@ -1,28 +1,28 @@
-import type { ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/auth'
-import { LogOut, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/auth";
+import { LogOut, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 interface AdminLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const { admin, logout } = useAuth()
-  const navigate = useNavigate()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const { admin, logout } = useAuth();
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
-    logout()
-    navigate('/admin/login')
-  }
+    logout();
+    navigate("/admin/login");
+  };
 
   const menuItems = [
-    { label: 'Dashboard', path: '/admin/dashboard', icon: '📊' },
-    { label: 'Agendamentos', path: '/admin/appointments', icon: '📅' },
-    { label: 'Serviços', path: '/admin/services', icon: '✂️' },
-  ]
+    { label: "Dashboard", path: "/admin/dashboard", icon: "📊" },
+    { label: "Agendamentos", path: "/admin/appointments", icon: "📅" },
+    { label: "Serviços", path: "/admin/services", icon: "✂️" },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-text">
@@ -60,7 +60,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         {/* Sidebar */}
         <aside
           className={`${
-            sidebarOpen ? 'w-64' : 'w-0'
+            sidebarOpen ? "w-64" : "w-0"
           } border-r border-card bg-card/30 transition-all duration-300 overflow-hidden lg:w-64`}
         >
           <nav className="p-6 space-y-4">
@@ -69,8 +69,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 type="button"
                 key={item.path}
                 onClick={() => {
-                  navigate(item.path)
-                  setSidebarOpen(false)
+                  navigate(item.path);
+                  setSidebarOpen(false);
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-card transition-colors text-left"
               >
@@ -85,5 +85,5 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <main className="flex-1">{children}</main>
       </div>
     </div>
-  )
+  );
 }

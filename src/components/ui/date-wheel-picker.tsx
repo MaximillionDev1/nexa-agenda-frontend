@@ -1,5 +1,5 @@
-"use client"
-import * as React from "react"
+"use client";
+import * as React from "react";
 import {
   motion,
   useMotionValue,
@@ -7,29 +7,27 @@ import {
   animate,
   type PanInfo,
   type MotionValue,
-} from "framer-motion"
-import { cn } from "@/utils/cn"
+} from "framer-motion";
+import { cn } from "@/utils/cn";
 
 export interface DateWheelPickerProps
   extends Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, "onChange"> {
-  value?: Date
-  onChange: (date: Date) => void
-  minYear?: number
-  maxYear?: number
-  size?: "sm" | "md" | "lg"
-  disabled?: boolean
-  locale?: string
+  value?: Date;
+  onChange: (date: Date) => void;
+  minYear?: number;
+  maxYear?: number;
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  locale?: string;
 }
 
-const ITEM_HEIGHT = 40
-const VISIBLE_ITEMS = 5
-const PERSPECTIVE_ORIGIN = ITEM_HEIGHT * 2
+const ITEM_HEIGHT = 40;
+const VISIBLE_ITEMS = 5;
+const PERSPECTIVE_ORIGIN = ITEM_HEIGHT * 2;
 
 function getMonthNames(locale?: string): string[] {
-  const formatter = new Intl.DateTimeFormat(locale, { month: "long" })
-  return Array.from({ length: 12 }, (_, i) =>
-    formatter.format(new Date(2000, i, 1))
-  )
+  const formatter = new Intl.DateTimeFormat(locale, { month: "long" });
+  return Array.from({ length: 12 }, (_, i) => formatter.format(new Date(2000, i, 1)));
 }
 
 const sizeConfig = {
@@ -51,18 +49,18 @@ const sizeConfig = {
     fontSize: "text-lg",
     gap: "gap-6",
   },
-}
+};
 
 interface WheelItemProps {
-  item: string | number
-  index: number
-  y: MotionValue<number>
-  itemHeight: number
-  visibleItems: number
-  centerOffset: number
-  isSelected: boolean
-  disabled?: boolean
-  onClick: () => void
+  item: string | number;
+  index: number;
+  y: MotionValue<number>;
+  itemHeight: number;
+  visibleItems: number;
+  centerOffset: number;
+  isSelected: boolean;
+  disabled?: boolean;
+  onClick: () => void;
 }
 
 function WheelItem({
@@ -77,27 +75,19 @@ function WheelItem({
   onClick,
 }: WheelItemProps) {
   const itemY = useTransform(y, (latest) => {
-    const offset = index * itemHeight + latest + centerOffset
-    return offset
-  })
+    const offset = index * itemHeight + latest + centerOffset;
+    return offset;
+  });
 
-  const rotateX = useTransform(
-    itemY,
-    [0, centerOffset, itemHeight * visibleItems],
-    [45, 0, -45]
-  )
+  const rotateX = useTransform(itemY, [0, centerOffset, itemHeight * visibleItems], [45, 0, -45]);
 
-  const scale = useTransform(
-    itemY,
-    [0, centerOffset, itemHeight * visibleItems],
-    [0.8, 1, 0.8]
-  )
+  const scale = useTransform(itemY, [0, centerOffset, itemHeight * visibleItems], [0.8, 1, 0.8]);
 
   const opacity = useTransform(
     itemY,
     [0, centerOffset * 0.5, centerOffset, centerOffset * 1.5, itemHeight * visibleItems],
-    [0.3, 0.6, 1, 0.6, 0.3]
-  )
+    [0.3, 0.6, 1, 0.6, 0.3],
+  );
 
   return (
     <motion.div
@@ -115,24 +105,24 @@ function WheelItem({
       <span
         className={cn(
           "font-medium transition-colors",
-          isSelected ? "text-foreground" : "text-muted-foreground"
+          isSelected ? "text-foreground" : "text-muted-foreground",
         )}
       >
         {item}
       </span>
     </motion.div>
-  )
+  );
 }
 
 interface WheelColumnProps {
-  items: (string | number)[]
-  value: number
-  onChange: (index: number) => void
-  itemHeight: number
-  visibleItems: number
-  disabled?: boolean
-  className?: string
-  ariaLabel: string
+  items: (string | number)[];
+  value: number;
+  onChange: (index: number) => void;
+  itemHeight: number;
+  visibleItems: number;
+  disabled?: boolean;
+  className?: string;
+  ariaLabel: string;
 }
 
 function WheelColumn({
@@ -145,115 +135,112 @@ function WheelColumn({
   className,
   ariaLabel,
 }: WheelColumnProps) {
-  const containerRef = React.useRef<HTMLDivElement>(null)
-  const y = useMotionValue(-value * itemHeight)
-  const centerOffset = Math.floor(visibleItems / 2) * itemHeight
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const y = useMotionValue(-value * itemHeight);
+  const centerOffset = Math.floor(visibleItems / 2) * itemHeight;
 
-  const valueRef = React.useRef(value)
-  const onChangeRef = React.useRef(onChange)
-  const itemsLengthRef = React.useRef(items.length)
+  const valueRef = React.useRef(value);
+  const onChangeRef = React.useRef(onChange);
+  const itemsLengthRef = React.useRef(items.length);
 
   React.useEffect(() => {
-    valueRef.current = value
-    onChangeRef.current = onChange
-    itemsLengthRef.current = items.length
-  })
+    valueRef.current = value;
+    onChangeRef.current = onChange;
+    itemsLengthRef.current = items.length;
+  });
 
   React.useEffect(() => {
     animate(y, -value * itemHeight, {
       type: "spring",
       stiffness: 300,
       damping: 30,
-    })
-  }, [value, itemHeight, y])
+    });
+  }, [value, itemHeight, y]);
 
-  const handleDragEnd = (
-    _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
-    if (disabled) return
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (disabled) return;
 
-    const currentY = y.get()
-    const velocity = info.velocity.y
-    const projectedY = currentY + velocity * 0.2
+    const currentY = y.get();
+    const velocity = info.velocity.y;
+    const projectedY = currentY + velocity * 0.2;
 
-    let newIndex = Math.round(-projectedY / itemHeight)
-    newIndex = Math.max(0, Math.min(items.length - 1, newIndex))
+    let newIndex = Math.round(-projectedY / itemHeight);
+    newIndex = Math.max(0, Math.min(items.length - 1, newIndex));
 
-    onChange(newIndex)
-  }
+    onChange(newIndex);
+  };
 
   React.useEffect(() => {
-    const container = containerRef.current
-    if (!container || disabled) return
+    const container = containerRef.current;
+    if (!container || disabled) return;
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
+      e.preventDefault();
+      e.stopPropagation();
 
-      const direction = e.deltaY > 0 ? 1 : -1
-      const currentValue = valueRef.current
-      const maxIndex = itemsLengthRef.current - 1
-      const newIndex = Math.max(0, Math.min(maxIndex, currentValue + direction))
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const currentValue = valueRef.current;
+      const maxIndex = itemsLengthRef.current - 1;
+      const newIndex = Math.max(0, Math.min(maxIndex, currentValue + direction));
 
       if (newIndex !== currentValue) {
-        onChangeRef.current(newIndex)
+        onChangeRef.current(newIndex);
       }
-    }
+    };
 
-    container.addEventListener("wheel", handleWheel, { passive: false })
+    container.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
-      container.removeEventListener("wheel", handleWheel)
-    }
-  }, [disabled])
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, [disabled]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (disabled) return
+    if (disabled) return;
 
-    const maxIndex = items.length - 1
-    let newIndex = value
+    const maxIndex = items.length - 1;
+    let newIndex = value;
 
     switch (e.key) {
       case "ArrowUp":
-        e.preventDefault()
-        newIndex = Math.max(0, value - 1)
-        break
+        e.preventDefault();
+        newIndex = Math.max(0, value - 1);
+        break;
       case "ArrowDown":
-        e.preventDefault()
-        newIndex = Math.min(maxIndex, value + 1)
-        break
+        e.preventDefault();
+        newIndex = Math.min(maxIndex, value + 1);
+        break;
       case "Home":
-        e.preventDefault()
-        newIndex = 0
-        break
+        e.preventDefault();
+        newIndex = 0;
+        break;
       case "End":
-        e.preventDefault()
-        newIndex = maxIndex
-        break
+        e.preventDefault();
+        newIndex = maxIndex;
+        break;
       case "PageUp":
-        e.preventDefault()
-        newIndex = Math.max(0, value - 5)
-        break
+        e.preventDefault();
+        newIndex = Math.max(0, value - 5);
+        break;
       case "PageDown":
-        e.preventDefault()
-        newIndex = Math.min(maxIndex, value + 5)
-        break
+        e.preventDefault();
+        newIndex = Math.min(maxIndex, value + 5);
+        break;
       default:
-        return
+        return;
     }
 
     if (newIndex !== value) {
-      onChange(newIndex)
+      onChange(newIndex);
     }
-  }
+  };
 
   const dragConstraints = React.useMemo(
     () => ({
       top: -(items.length - 1) * itemHeight,
       bottom: 0,
     }),
-    [items.length, itemHeight]
-  )
+    [items.length, itemHeight],
+  );
 
   return (
     <div
@@ -261,7 +248,7 @@ function WheelColumn({
       className={cn(
         "relative overflow-hidden",
         disabled && "opacity-50 pointer-events-none",
-        className
+        className,
       )}
       style={{ height: itemHeight * visibleItems }}
       tabIndex={disabled ? -1 : 0}
@@ -278,8 +265,7 @@ function WheelColumn({
         className="absolute inset-x-0 top-0 z-10 pointer-events-none"
         style={{
           height: centerOffset,
-          background:
-            "linear-gradient(to bottom, var(--background) 0%, transparent 100%)",
+          background: "linear-gradient(to bottom, var(--background) 0%, transparent 100%)",
         }}
         aria-hidden="true"
       />
@@ -287,8 +273,7 @@ function WheelColumn({
         className="absolute inset-x-0 bottom-0 z-10 pointer-events-none"
         style={{
           height: centerOffset,
-          background:
-            "linear-gradient(to top, var(--background) 0%, transparent 100%)",
+          background: "linear-gradient(to top, var(--background) 0%, transparent 100%)",
         }}
         aria-hidden="true"
       />
@@ -328,17 +313,14 @@ function WheelColumn({
         ))}
       </motion.div>
     </div>
-  )
+  );
 }
 
 function getDaysInMonth(year: number, month: number): number {
-  return new Date(year, month + 1, 0).getDate()
+  return new Date(year, month + 1, 0).getDate();
 }
 
-export const DateWheelPicker = React.forwardRef<
-  HTMLFieldSetElement,
-  DateWheelPickerProps
->(
+export const DateWheelPicker = React.forwardRef<HTMLFieldSetElement, DateWheelPickerProps>(
   (
     {
       value,
@@ -351,74 +333,74 @@ export const DateWheelPicker = React.forwardRef<
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const config = sizeConfig[size]
-    const months = React.useMemo(() => getMonthNames(locale), [locale])
+    const config = sizeConfig[size];
+    const months = React.useMemo(() => getMonthNames(locale), [locale]);
     const years = React.useMemo(() => {
-      const arr: number[] = []
+      const arr: number[] = [];
       for (let y = maxYear; y >= minYear; y--) {
-        arr.push(y)
+        arr.push(y);
       }
-      return arr
-    }, [minYear, maxYear])
+      return arr;
+    }, [minYear, maxYear]);
 
     const [dateState, setDateState] = React.useState(() => {
-      const currentDate = value || new Date()
+      const currentDate = value || new Date();
       return {
         day: currentDate.getDate(),
         month: currentDate.getMonth(),
         year: currentDate.getFullYear(),
-      }
-    })
+      };
+    });
 
-    const isInternalChange = React.useRef(false)
+    const isInternalChange = React.useRef(false);
 
     const days = React.useMemo(() => {
-      const daysInMonth = getDaysInMonth(dateState.year, dateState.month)
-      return Array.from({ length: daysInMonth }, (_, i) => i + 1)
-    }, [dateState.month, dateState.year])
+      const daysInMonth = getDaysInMonth(dateState.year, dateState.month);
+      return Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    }, [dateState.month, dateState.year]);
 
     const handleDayChange = React.useCallback((dayIndex: number) => {
-      isInternalChange.current = true
-      setDateState((prev) => ({ ...prev, day: dayIndex + 1 }))
-    }, [])
+      isInternalChange.current = true;
+      setDateState((prev) => ({ ...prev, day: dayIndex + 1 }));
+    }, []);
 
     const handleMonthChange = React.useCallback((monthIndex: number) => {
-      isInternalChange.current = true
+      isInternalChange.current = true;
       setDateState((prev) => {
-        const daysInNewMonth = getDaysInMonth(prev.year, monthIndex)
-        const adjustedDay = Math.min(prev.day, daysInNewMonth)
-        return { ...prev, month: monthIndex, day: adjustedDay }
-      })
-    }, [])
+        const daysInNewMonth = getDaysInMonth(prev.year, monthIndex);
+        const adjustedDay = Math.min(prev.day, daysInNewMonth);
+        return { ...prev, month: monthIndex, day: adjustedDay };
+      });
+    }, []);
 
     const handleYearChange = React.useCallback(
       (yearIndex: number) => {
-        isInternalChange.current = true
+        isInternalChange.current = true;
         setDateState((prev) => {
-          const newYear = years[yearIndex]
-          const daysInNewMonth = getDaysInMonth(newYear, prev.month)
-          const adjustedDay = Math.min(prev.day, daysInNewMonth)
-          return { ...prev, year: newYear, day: adjustedDay }
-        })
+          const newYear = years[yearIndex];
+          const daysInNewMonth = getDaysInMonth(newYear, prev.month);
+          const adjustedDay = Math.min(prev.day, daysInNewMonth);
+          return { ...prev, year: newYear, day: adjustedDay };
+        });
       },
-      [years]
-    )
+      [years],
+    );
 
     React.useEffect(() => {
       if (isInternalChange.current) {
-        const newDate = new Date(dateState.year, dateState.month, dateState.day)
-        onChange(newDate)
-        isInternalChange.current = false
+        const newDate = new Date(dateState.year, dateState.month, dateState.day);
+        onChange(newDate);
+        isInternalChange.current = false;
       }
-    }, [dateState, onChange])
+    }, [dateState, onChange]);
 
     React.useEffect(() => {
       if (value && !isInternalChange.current) {
-        const valueDay = value.getDate()
-        const valueMonth = value.getMonth()
-        const valueYear = value.getFullYear()
+        const valueDay = value.getDate();
+        const valueMonth = value.getMonth();
+        const valueYear = value.getFullYear();
 
         if (
           valueDay !== dateState.day ||
@@ -429,12 +411,12 @@ export const DateWheelPicker = React.forwardRef<
             day: valueDay,
             month: valueMonth,
             year: valueYear,
-          })
+          });
         }
       }
-    }, [value, dateState.day, dateState.month, dateState.year])
+    }, [value, dateState.day, dateState.month, dateState.year]);
 
-    const yearIndex = years.indexOf(dateState.year)
+    const yearIndex = years.indexOf(dateState.year);
 
     return (
       <fieldset
@@ -444,7 +426,7 @@ export const DateWheelPicker = React.forwardRef<
           config.gap,
           config.fontSize,
           disabled && "opacity-50 pointer-events-none",
-          className
+          className,
         )}
         style={{ perspective: "1000px" }}
         aria-label="Date picker"
@@ -481,8 +463,8 @@ export const DateWheelPicker = React.forwardRef<
           ariaLabel="Select year"
         />
       </fieldset>
-    )
-  }
-)
+    );
+  },
+);
 
-DateWheelPicker.displayName = "DateWheelPicker"
+DateWheelPicker.displayName = "DateWheelPicker";

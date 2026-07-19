@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Search, Filter, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import type { IService } from '@/types';
+import { useEffect, useState } from "react";
+import { Search, Filter, X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import type { IService } from "@/types";
 
 interface AppointmentsFiltersProps {
   services: IService[];
@@ -11,7 +11,7 @@ interface AppointmentsFiltersProps {
 
 export interface FilterValues {
   date?: string;
-  status?: 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED';
+  status?: "SCHEDULED" | "CONFIRMED" | "COMPLETED" | "CANCELED";
   serviceId?: string;
   customerName?: string;
   customerPhone?: string;
@@ -24,11 +24,11 @@ export function AppointmentsFilters({
 }: AppointmentsFiltersProps) {
   const { watch, reset, register } = useForm<FilterValues>({
     defaultValues: {
-      date: '',
+      date: "",
       status: undefined,
-      serviceId: '',
-      customerName: '',
-      customerPhone: '',
+      serviceId: "",
+      customerName: "",
+      customerPhone: "",
     },
   });
 
@@ -73,12 +73,13 @@ export function AppointmentsFilters({
           <input
             type="text"
             placeholder="Buscar por nome ou telefone..."
-            {...register('customerName')}
+            {...register("customerName")}
             className="w-full pl-10 pr-4 py-2 bg-background border border-card rounded-lg text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             disabled={loading}
           />
         </div>
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="p-2 hover:bg-background rounded-lg transition-colors border border-card"
           aria-label="Mostrar filtros avançados"
@@ -86,7 +87,8 @@ export function AppointmentsFilters({
           <Filter size={18} className="text-text-secondary" />
         </button>
         {hasFilters && (
-          <button type="button"
+          <button
+            type="button"
             onClick={handleReset}
             className="p-2 hover:bg-background rounded-lg transition-colors border border-card text-text-secondary hover:text-text"
             aria-label="Limpar filtros"
@@ -107,7 +109,7 @@ export function AppointmentsFilters({
             <input
               id="date"
               type="date"
-              {...register('date')}
+              {...register("date")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             />
@@ -120,7 +122,7 @@ export function AppointmentsFilters({
             </label>
             <select
               id="status"
-              {...register('status')}
+              {...register("status")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             >
@@ -139,7 +141,7 @@ export function AppointmentsFilters({
             </label>
             <select
               id="service"
-              {...register('serviceId')}
+              {...register("serviceId")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             >
@@ -161,7 +163,7 @@ export function AppointmentsFilters({
               id="phone"
               type="tel"
               placeholder="(XX) XXXXX-XXXX"
-              {...register('customerPhone')}
+              {...register("customerPhone")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             />

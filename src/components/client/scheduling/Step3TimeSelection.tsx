@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { useQuery } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { Clock } from 'lucide-react'
-import { apiService } from '@/services/api'
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Clock } from "lucide-react";
+import { apiService } from "@/services/api";
 
 interface Step3TimeSelectionProps {
-  serviceId?: string
-  appointmentDate?: string
-  selectedTime?: string
-  onSelectTime: (time: string) => void
+  serviceId?: string;
+  appointmentDate?: string;
+  selectedTime?: string;
+  onSelectTime: (time: string) => void;
 }
 
 export function Step3TimeSelection({
@@ -19,37 +19,37 @@ export function Step3TimeSelection({
   selectedTime,
   onSelectTime,
 }: Step3TimeSelectionProps) {
-  const [durationMinutes, setDurationMinutes] = useState(0)
+  const [durationMinutes, setDurationMinutes] = useState(0);
 
   // Buscar duração do serviço selecionado
   useEffect(() => {
-    if (!serviceId) return
+    if (!serviceId) return;
 
     const fetchServiceDuration = async () => {
       try {
-        const service = await apiService.getServiceById(serviceId)
-        setDurationMinutes(service.duration)
+        const service = await apiService.getServiceById(serviceId);
+        setDurationMinutes(service.duration);
       } catch (error) {
-        console.error('Erro ao buscar duração do serviço:', error)
+        console.error("Erro ao buscar duração do serviço:", error);
       }
-    }
+    };
 
-    fetchServiceDuration()
-  }, [serviceId])
+    fetchServiceDuration();
+  }, [serviceId]);
 
   // Buscar horários disponíveis
   const { data: availabilityData, isLoading } = useQuery({
-    queryKey: ['availability', appointmentDate, serviceId],
+    queryKey: ["availability", appointmentDate, serviceId],
     queryFn: () => {
       if (!appointmentDate || !serviceId) {
-        return Promise.resolve({ slots: [] })
+        return Promise.resolve({ slots: [] });
       }
-      return apiService.getAvailability(appointmentDate, serviceId)
+      return apiService.getAvailability(appointmentDate, serviceId);
     },
     enabled: !!appointmentDate && !!serviceId,
-  })
+  });
 
-  const slots = availabilityData?.slots || []
+  const slots = availabilityData?.slots || [];
 
   if (!appointmentDate || !serviceId) {
     return (
@@ -61,7 +61,7 @@ export function Step3TimeSelection({
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -75,7 +75,7 @@ export function Step3TimeSelection({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (slots.length === 0) {
@@ -89,12 +89,12 @@ export function Step3TimeSelection({
           </p>
         </div>
       </div>
-    )
+    );
   }
 
-  const formattedDate = format(new Date(appointmentDate), 'dd/MM/yyyy', {
+  const formattedDate = format(new Date(appointmentDate), "dd/MM/yyyy", {
     locale: ptBR,
-  })
+  });
 
   return (
     <div className="space-y-6">
@@ -124,8 +124,8 @@ export function Step3TimeSelection({
               whileTap={{ scale: 0.95 }}
               className={`p-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
                 selectedTime === slot
-                  ? 'bg-primary text-white border-primary'
-                  : 'bg-card border border-card hover:border-primary hover:text-primary'
+                  ? "bg-primary text-white border-primary"
+                  : "bg-card border border-card hover:border-primary hover:text-primary"
               }`}
               aria-pressed={selectedTime === slot}
             >
@@ -150,5 +150,5 @@ export function Step3TimeSelection({
         </motion.div>
       )}
     </div>
-  )
+  );
 }

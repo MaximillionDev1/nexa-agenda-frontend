@@ -1,43 +1,35 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { useQuery } from '@tanstack/react-query'
-import { PublicLayout } from '@/layouts/PublicLayout'
-import { apiService } from '@/services/api'
-import { Button } from '@/components/ui/Button'
-import {
-  CheckCircle,
-  Copy,
-  MessageCircle,
-  Home,
-  Calendar,
-  Clock,
-  DollarSign,
-} from 'lucide-react'
-import { toast } from 'sonner'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { useParams, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { PublicLayout } from "@/layouts/PublicLayout";
+import { apiService } from "@/services/api";
+import { Button } from "@/components/ui/Button";
+import { CheckCircle, Copy, MessageCircle, Home, Calendar, Clock, DollarSign } from "lucide-react";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface LocationState {
-  customerPhone?: string
+  customerPhone?: string;
 }
 
 export default function SchedulingConfirmationPage() {
-  const { publicCode } = useParams<{ publicCode: string }>()
-  const navigate = useNavigate()
-  const location = useLocation() as { state?: LocationState }
-  const customerPhone = location.state?.customerPhone || ''
+  const { publicCode } = useParams<{ publicCode: string }>();
+  const navigate = useNavigate();
+  const location = useLocation() as { state?: LocationState };
+  const customerPhone = location.state?.customerPhone || "";
 
   const { data: appointment, isLoading } = useQuery({
-    queryKey: ['appointment', publicCode],
+    queryKey: ["appointment", publicCode],
     queryFn: () => {
-      if (!publicCode) throw new Error('Código não fornecido')
+      if (!publicCode) throw new Error("Código não fornecido");
       return apiService.lookupAppointment({
         publicCode,
         customerPhone,
-      })
+      });
     },
-  })
+  });
 
   if (isLoading) {
     return (
@@ -49,7 +41,7 @@ export default function SchedulingConfirmationPage() {
           </div>
         </div>
       </PublicLayout>
-    )
+    );
   }
 
   if (!appointment) {
@@ -58,42 +50,41 @@ export default function SchedulingConfirmationPage() {
         <div className="py-20 container-app max-w-md mx-auto">
           <div className="text-center">
             <p className="text-text-secondary mb-4">Agendamento não encontrado</p>
-            <Button onClick={() => navigate('/')}>Voltar ao início</Button>
+            <Button onClick={() => navigate("/")}>Voltar ao início</Button>
           </div>
         </div>
       </PublicLayout>
-    )
+    );
   }
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(appointment.publicCode)
-    toast.success('Código copiado!')
-  }
+    navigator.clipboard.writeText(appointment.publicCode);
+    toast.success("Código copiado!");
+  };
 
   const handleShareWhatsApp = () => {
     const message = `Olá! Meu agendamento foi confirmado!\n\n📅 ${format(
       new Date(appointment.appointmentDate),
-      'dd/MM/yyyy',
-      { locale: ptBR }
+      "dd/MM/yyyy",
+      { locale: ptBR },
     )}\n🕐 ${appointment.startTime}\n💇 ${
       appointment.service.name
     }\n💰 R$ ${Number.parseFloat(appointment.service.price).toFixed(2)}\n\nCódigo: ${
       appointment.publicCode
-    }`
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, '_blank')
-  }
+    }`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   const endTime = new Date(
-    new Date(appointment.startTime).getTime() +
-      appointment.service.duration * 60000
-  )
+    new Date(appointment.startTime).getTime() + appointment.service.duration * 60000,
+  );
 
-  const formattedDate = format(new Date(appointment.appointmentDate), 'dd/MM/yyyy', {
+  const formattedDate = format(new Date(appointment.appointmentDate), "dd/MM/yyyy", {
     locale: ptBR,
-  })
+  });
 
-  const formattedEndTime = format(endTime, 'HH:mm')
+  const formattedEndTime = format(endTime, "HH:mm");
 
   return (
     <PublicLayout>
@@ -169,9 +160,7 @@ export default function SchedulingConfirmationPage() {
               <div className="space-y-2">
                 <p className="text-sm text-text-secondary">Código do agendamento</p>
                 <div className="flex items-center gap-3 bg-background/50 border border-success/20 rounded-lg p-4">
-                  <code className="font-mono font-bold text-lg">
-                    {appointment.publicCode}
-                  </code>
+                  <code className="font-mono font-bold text-lg">{appointment.publicCode}</code>
                   <button
                     type="button"
                     onClick={handleCopyCode}
@@ -222,7 +211,7 @@ export default function SchedulingConfirmationPage() {
                 type="button"
                 variant="secondary"
                 size="lg"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
                 className="flex items-center justify-center gap-2"
               >
                 <Home className="w-5 h-5" />
@@ -240,16 +229,12 @@ export default function SchedulingConfirmationPage() {
             <p className="text-sm text-text-secondary mb-3">
               Quer consultar seu agendamento depois?
             </p>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => navigate('/lookup')}
-            >
+            <Button type="button" variant="ghost" onClick={() => navigate("/lookup")}>
               Acessar página de consulta
             </Button>
           </motion.div>
         </div>
       </div>
     </PublicLayout>
-  )
+  );
 }

@@ -6,5 +6,5 @@ export default function AppointmentsPage() {
         <p className="text-text-secondary">Página em desenvolvimento...</p>
       </div>
     </div>
-  )
+  );
 }

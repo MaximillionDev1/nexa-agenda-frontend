@@ -1,30 +1,30 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/auth'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/auth";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@nexaagenda.com')
-  const [password, setPassword] = useState('Admin@123')
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("admin@nexaagenda.com");
+  const [password, setPassword] = useState("Admin@123");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
-      await login({ email, password })
-      toast.success('Login realizado com sucesso!')
-      navigate('/admin/dashboard')
+      await login({ email, password });
+      toast.success("Login realizado com sucesso!");
+      navigate("/admin/dashboard");
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Erro ao fazer login'
-      toast.error(message)
+      const message = error instanceof Error ? error.message : "Erro ao fazer login";
+      toast.error(message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -61,7 +61,7 @@ export default function LoginPage() {
           />
 
           <Button type="submit" variant="primary" className="w-full" isLoading={isLoading}>
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? "Entrando..." : "Entrar"}
           </Button>
 
           {/* Demo Info */}
@@ -73,5 +73,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import { useState, useCallback, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
-import { apiService } from '@/services/api';
-import type { IAppointment } from '@/types';
-import { AppointmentsFilters, type FilterValues } from '@/components/admin/AppointmentsFilters';
-import { AppointmentsTable } from '@/components/admin/AppointmentsTable';
-import { Pagination } from '@/components/admin/Pagination';
+import { useState, useCallback, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { apiService } from "@/services/api";
+import type { IAppointment } from "@/types";
+import { AppointmentsFilters, type FilterValues } from "@/components/admin/AppointmentsFilters";
+import { AppointmentsTable } from "@/components/admin/AppointmentsTable";
+import { Pagination } from "@/components/admin/Pagination";
 import {
   useAppointmentsAdmin,
- type AppointmentsFilters as AppointmentsFiltersType,
-} from '@/hooks/useAppointmentsAdmin';
+  type AppointmentsFilters as AppointmentsFiltersType,
+} from "@/hooks/useAppointmentsAdmin";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -20,7 +20,7 @@ export default function AppointmentsPage() {
 
   // Fetch services para os filtros
   const servicesQuery = useQuery({
-    queryKey: ['services'],
+    queryKey: ["services"],
     queryFn: () => apiService.getServices(),
   });
 
@@ -63,17 +63,17 @@ export default function AppointmentsPage() {
 
   // Handler para mudança de status
   const handleStatusChange = useCallback(
-    (id: string, status: IAppointment['status']) => {
+    (id: string, status: IAppointment["status"]) => {
       setLoadingActionId(id);
       updateStatusMutation.mutate(
         { id, status },
         {
           onSuccess: () => setLoadingActionId(null),
           onError: () => setLoadingActionId(null),
-        }
+        },
       );
     },
-    [updateStatusMutation]
+    [updateStatusMutation],
   );
 
   // Handler para cancelar
@@ -85,7 +85,7 @@ export default function AppointmentsPage() {
         onError: () => setLoadingActionId(null),
       });
     },
-    [cancelMutation]
+    [cancelMutation],
   );
 
   // Handler para deletar
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
     (id: string) => {
       if (
         window.confirm(
-          'Tem certeza que deseja deletar este agendamento? Esta ação não pode ser desfeita.'
+          "Tem certeza que deseja deletar este agendamento? Esta ação não pode ser desfeita.",
         )
       ) {
         setLoadingActionId(id);
@@ -103,7 +103,7 @@ export default function AppointmentsPage() {
         });
       }
     },
-    [deleteMutation]
+    [deleteMutation],
   );
 
   const isLoading =
@@ -113,11 +113,7 @@ export default function AppointmentsPage() {
     deleteMutation.isPending;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="p-4 md:p-8 space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 md:p-8 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

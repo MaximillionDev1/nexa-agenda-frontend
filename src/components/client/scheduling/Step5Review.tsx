@@ -1,21 +1,21 @@
-import { motion } from 'framer-motion'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { useQuery } from '@tanstack/react-query'
-import { Button } from '@/components/ui/Button'
-import { apiService } from '@/services/api'
-import { CheckCircle, Calendar, Clock, User, Phone, FileText, ArrowLeft } from 'lucide-react'
+import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/Button";
+import { apiService } from "@/services/api";
+import { CheckCircle, Calendar, Clock, User, Phone, FileText, ArrowLeft } from "lucide-react";
 
 interface Step5ReviewProps {
-  serviceId: string
-  appointmentDate: string
-  startTime: string
-  customerName: string
-  customerPhone: string
-  notes?: string
-  onConfirm: () => void
-  onBack: () => void
-  isSubmitting: boolean
+  serviceId: string;
+  appointmentDate: string;
+  startTime: string;
+  customerName: string;
+  customerPhone: string;
+  notes?: string;
+  onConfirm: () => void;
+  onBack: () => void;
+  isSubmitting: boolean;
 }
 
 export function Step5Review({
@@ -30,20 +30,20 @@ export function Step5Review({
   isSubmitting,
 }: Step5ReviewProps) {
   const { data: service } = useQuery({
-    queryKey: ['service', serviceId],
+    queryKey: ["service", serviceId],
     queryFn: () => apiService.getServiceById(serviceId),
-  })
+  });
 
   if (!service) {
-    return <div>Carregando...</div>
+    return <div>Carregando...</div>;
   }
 
-  const formattedDate = format(new Date(appointmentDate), 'dd/MM/yyyy', {
+  const formattedDate = format(new Date(appointmentDate), "dd/MM/yyyy", {
     locale: ptBR,
-  })
+  });
 
-  const dateTime = new Date(`${appointmentDate}T${startTime}`)
-  const endTime = new Date(dateTime.getTime() + service.duration * 60000)
+  const dateTime = new Date(`${appointmentDate}T${startTime}`);
+  const endTime = new Date(dateTime.getTime() + service.duration * 60000);
 
   return (
     <motion.div
@@ -76,7 +76,7 @@ export function Step5Review({
             <div>
               <p className="text-sm text-text-secondary">Horário</p>
               <p className="font-semibold">
-                {startTime} às {format(endTime, 'HH:mm')}
+                {startTime} às {format(endTime, "HH:mm")}
               </p>
             </div>
           </div>
@@ -131,7 +131,7 @@ export function Step5Review({
       <div className="bg-success/10 border border-success/30 rounded-xl p-4">
         <p className="text-sm text-text-secondary mb-1">Ao continuar, você concorda com</p>
         <p className="text-sm font-medium">
-          nossa <span className="text-success">política de privacidade</span> e{' '}
+          nossa <span className="text-success">política de privacidade</span> e{" "}
           <span className="text-success">termos de serviço</span>
         </p>
       </div>
@@ -155,9 +155,9 @@ export function Step5Review({
           disabled={isSubmitting}
           className="flex-1"
         >
-          {isSubmitting ? 'Confirmando...' : 'Confirmar agendamento'}
+          {isSubmitting ? "Confirmando..." : "Confirmar agendamento"}
         </Button>
       </div>
     </motion.div>
-  )
+  );
 }
