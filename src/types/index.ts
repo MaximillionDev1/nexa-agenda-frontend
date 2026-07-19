@@ -103,3 +103,18 @@ export interface INextAvailableSlot {
   time: string
   formatted: string
 }
+
+// Verificar se IAppointment tem customerEmail. Se não tiver, adicionar:
+
+export interface IAppointment {
+  id: string;
+  serviceId: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string; // Adicionar se não existir
+  appointmentDate: string;
+  status: 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED';
+  service: IService;
+  createdAt: string;
+  updatedAt: string;
+}
