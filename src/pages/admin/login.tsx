@@ -1,77 +1,170 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/auth";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/auth';
+import { PublicLayout } from '@/layouts/PublicLayout';
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("admin@nexaagenda.com");
-  const [password, setPassword] = useState("Admin@123");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    setErrorMessage(null);
     setIsLoading(true);
 
     try {
-      await login({ email, password });
-      toast.success("Login realizado com sucesso!");
-      navigate("/admin/dashboard");
+      await login({ email: data.email, password: data.password });
+      navigate('/admin/dashboard');
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Erro ao fazer login";
-      toast.error(message);
+      const err = error as { message?: string };
+      setErrorMessage(err?.message || 'Invalid credentials');
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-background text-text flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">Nexa</h1>
-          <p className="text-text-secondary">Painel Administrativo</p>
-        </div>
-
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-card/50 border border-card rounded-lg p-8 space-y-6"
+    <PublicLayout>
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-card border border-card rounded-lg p-6 sm:p-8"
         >
-          <Input
-            id="email"
-            type="email"
-            label="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <Input
-            id="password"
-            type="password"
-            label="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <Button type="submit" variant="primary" className="w-full" isLoading={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
-          </Button>
-
-          {/* Demo Info */}
-          <div className="bg-background/50 border border-warning/30 rounded-lg p-4 text-sm text-text-secondary">
-            <p className="font-semibold text-warning mb-2">Credenciais de Demonstração:</p>
-            <p>E-mail: admin@nexaagenda.com</p>
-            <p>Senha: Admin@123</p>
+          {/* Header */}
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-text mb-2">Admin Login</h1>
+            <p className="text-sm sm:text-base text-text-secondary">
+              Sign in to your admin account
+            </p>
           </div>
-        </form>
+
+          {/* Error Alert */}
+          {errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              role="alert"
+              aria-live="polite"
+              className="mb-4 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg flex items-start gap-3"
+            >
+              <AlertCircle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm sm:text-base text-red-800 dark:text-red-200">{errorMessage}</p>
+            </motion.div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-text-secondary mb-1"
+              >
+                Email Address <span aria-label="required">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                {...register('email')}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                disabled={isLoading}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background border border-card rounded-lg text-sm sm:text-base text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all disabled:opacity-50"
+              />
+              {errors.email && (
+                <p
+                  id="email-error"
+                  role="alert"
+                  className="text-xs sm:text-sm text-red-500 mt-1"
+                >
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-text-secondary mb-1"
+              >
+                Password <span aria-label="required">*</span>
+              </label>
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                {...register('password')}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? 'password-error' : undefined}
+                disabled={isLoading}
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background border border-card rounded-lg text-sm sm:text-base text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all disabled:opacity-50"
+              />
+              {errors.password && (
+                <p
+                  id="password-error"
+                  role="alert"
+                  className="text-xs sm:text-sm text-red-500 mt-1"
+                >
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Demo Credentials */}
+            <div className="p-3 sm:p-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded-lg">
+              <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 font-medium mb-2">
+                Demo Credentials:
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                Email: <code className="font-mono">admin@nexaagenda.com</code>
+              </p>
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                Password: <code className="font-mono">Admin@123</code>
+              </p>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              aria-busy={isLoading}
+              className="w-full px-4 py-2 sm:py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base min-h-[44px]"
+            >
+              {isLoading && <Loader2 size={18} className="animate-spin" />}
+              {isLoading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <p className="text-xs sm:text-sm text-text-secondary text-center mt-6">
+            This is a secure admin area. Unauthorized access is prohibited.
+          </p>
+        </motion.div>
       </div>
-    </div>
+    </PublicLayout>
   );
 }

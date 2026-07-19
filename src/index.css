@@ -1,31 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Focus states visíveis para acessibilidade */
+@layer base {
+  /* Remove default outline para controlar melhor */
+  *:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
 
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  /* Focus visível em todos os elementos interativos */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: more) {
+    button,
+    a,
+    input,
+    textarea,
+    select {
+      border-width: 2px;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* High contrast dark mode */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+    }
+  }
 }
 
-html {
-	scroll-behavior: smooth;
-}
-
-body {
-	@apply bg-background text-text font-sans;
-}
-
+/* Touch target minimum size */
 @layer components {
-	.container-app {
-		@apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-	}
+  .btn-touch {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
 
-	.button-primary {
-		@apply bg-primary hover:bg-primary-light text-white font-semibold py-2 px-4 rounded-lg transition-colors;
-	}
-
-	.button-secondary {
-		@apply bg-card border border-primary text-primary hover:bg-primary hover:text-white font-semibold py-2 px-4 rounded-lg transition-colors;
-	}
+  /* Skip to main content link */
+  .skip-to-main {
+    @apply absolute top-0 left-0 px-4 py-2 bg-primary text-white transform -translate-y-full focus:translate-y-0 transition-transform;
+  }
 }
