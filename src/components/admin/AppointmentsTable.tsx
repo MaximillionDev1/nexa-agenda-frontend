@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import {
   AlertCircle,
   CheckCircle2,
@@ -9,14 +9,14 @@ import {
   Phone,
   Mail,
   Loader2,
-} from "lucide-react";
-import type { IAppointment } from "@/types";
-import { AppointmentStatusBadge } from "./AppointmentStatusBadge";
-import { motion, AnimatePresence } from "framer-motion";
+} from 'lucide-react';
+import type { IAppointment } from '@/types';
+import { AppointmentStatusBadge } from './AppointmentStatusBadge';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AppointmentsTableProps {
   appointments: IAppointment[];
-  onStatusChange: (id: string, status: IAppointment["status"]) => void;
+  onStatusChange: (id: string, status: IAppointment['status']) => void;
   onCancel: (id: string) => void;
   onDelete: (id: string) => void;
   loading?: boolean;
@@ -35,39 +35,41 @@ export function AppointmentsTable({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-12 text-text-secondary">
+      <div className="flex justify-center items-center py-8 sm:py-12 text-text-secondary">
         <Loader2 size={24} className="animate-spin" />
-        <span className="ml-2">Carregando agendamentos...</span>
+        <span className="ml-2 text-sm sm:text-base">Loading appointments...</span>
       </div>
     );
   }
 
   if (!appointments || appointments.length === 0) {
     return (
-      <div className="text-center py-12 text-text-secondary">
-        <p className="text-lg">Nenhum agendamento encontrado</p>
+      <div className="text-center py-8 sm:py-12 text-text-secondary px-4">
+        <p className="text-base sm:text-lg">No appointments found</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-card">
-      <table className="w-full">
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm sm:text-base">
         <thead className="bg-background/50 border-b border-card">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
-              Cliente
+            <th className="px-2 sm:px-4 py-3 text-left font-semibold text-text-secondary text-xs sm:text-sm">
+              Client
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
-              Serviço
+            <th className="hidden sm:table-cell px-4 py-3 text-left font-semibold text-text-secondary text-xs sm:text-sm">
+              Service
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
-              Data/Hora
+            <th className="px-2 sm:px-4 py-3 text-left font-semibold text-text-secondary text-xs sm:text-sm">
+              Date/Time
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">
+            <th className="hidden md:table-cell px-4 py-3 text-left font-semibold text-text-secondary text-xs sm:text-sm">
               Status
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-text-secondary">Ações</th>
+            <th className="px-2 sm:px-4 py-3 text-left font-semibold text-text-secondary text-xs sm:text-sm">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -81,39 +83,54 @@ export function AppointmentsTable({
                 transition={{ delay: idx * 0.05 }}
                 className="border-b border-card hover:bg-background/60 transition-colors"
               >
-                <td className="px-4 py-3">
-                  <div>
-                    <p className="font-medium text-text">{appointment.customerName}</p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-text-secondary">
-                      <Phone size={12} />
-                      {appointment.customerPhone}
+                <td className="px-2 sm:px-4 py-3">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-medium text-text text-xs sm:text-sm">
+                      {appointment.customerName}
+                    </p>
+                    <div className="flex items-center gap-1 text-xs text-text-secondary">
+                      <Phone size={12} className="flex-shrink-0" />
+                      <span className="truncate">{appointment.customerPhone}</span>
                     </div>
                     {appointment.customerEmail && (
-                      <div className="flex items-center gap-2 mt-1 text-xs text-text-secondary">
-                        <Mail size={12} />
+                      <div className="flex items-center gap-1 text-xs text-text-secondary sm:hidden">
+                        <Mail size={12} className="flex-shrink-0" />
                         <span className="truncate">{appointment.customerEmail}</span>
                       </div>
                     )}
+                    {/* Mobile: mostrar serviço aqui */}
+                    <div className="sm:hidden mt-1 pt-1 border-t border-card/50">
+                      <p className="font-medium text-text text-xs">
+                        {appointment.service.name}
+                      </p>
+                      <p className="text-xs text-text-secondary">
+                        {appointment.service.duration} min
+                      </p>
+                    </div>
                   </div>
                 </td>
-                <td className="px-4 py-3">
-                  <p className="font-medium text-text">{appointment.service.name}</p>
-                  <p className="text-sm text-text-secondary">{appointment.service.duration} min</p>
-                </td>
-                <td className="px-4 py-3">
-                  <p className="text-text">
-                    {format(new Date(appointment.appointmentDate), "dd MMM yyyy", {
+                <th className="hidden sm:table-cell px-4 py-3">
+                  <div>
+                    <p className="font-medium text-text text-sm">{appointment.service.name}</p>
+                    <p className="text-xs text-text-secondary">
+                      {appointment.service.duration} min
+                    </p>
+                  </div>
+                </th>
+                <td className="px-2 sm:px-4 py-3">
+                  <p className="text-text text-xs sm:text-sm">
+                    {format(new Date(appointment.appointmentDate), 'dd MMM', {
                       locale: ptBR,
                     })}
                   </p>
-                  <p className="text-sm text-text-secondary">
-                    {format(new Date(appointment.appointmentDate), "HH:mm")}
+                  <p className="text-xs sm:text-sm text-text-secondary">
+                    {format(new Date(appointment.appointmentDate), 'HH:mm')}
                   </p>
                 </td>
-                <td className="px-4 py-3">
+                <td className="hidden md:table-cell px-4 py-3">
                   <AppointmentStatusBadge status={appointment.status} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 sm:px-4 py-3">
                   <div className="relative">
                     <button
                       type="button"
@@ -121,10 +138,10 @@ export function AppointmentsTable({
                         setOpenMenuId(openMenuId === appointment.id ? null : appointment.id)
                       }
                       className="p-2 hover:bg-background rounded-lg transition-colors"
-                      aria-label="Abrir menu de ações"
+                      aria-label="Open actions menu"
                       disabled={Boolean(loadingActionId)}
                     >
-                      <MoreVertical size={18} className="text-text-secondary" />
+                      <MoreVertical size={16} className="text-text-secondary sm:w-5 sm:h-5" />
                     </button>
 
                     <AnimatePresence>
@@ -133,45 +150,51 @@ export function AppointmentsTable({
                           initial={{ opacity: 0, scale: 0.95, y: -10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                          className="absolute right-0 top-full mt-2 bg-card border border-card rounded-lg shadow-lg py-2 z-50 min-w-56"
+                          className="absolute right-0 top-full mt-2 bg-card border border-card rounded-lg shadow-lg py-2 z-50 min-w-48"
                         >
-                          {appointment.status !== "CONFIRMED" && (
+                          {/* Mobile: mostrar status aqui */}
+                          <div className="md:hidden px-4 py-2 border-b border-card/50">
+                            <p className="text-xs font-medium text-text-secondary mb-1">Status</p>
+                            <AppointmentStatusBadge status={appointment.status} />
+                          </div>
+
+                          {appointment.status !== 'CONFIRMED' && (
                             <button
                               type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, "CONFIRMED");
+                                onStatusChange(appointment.id, 'CONFIRMED');
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
-                              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                              className="w-full px-4 py-2 text-left text-xs sm:text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
                               {loadingActionId === appointment.id ? (
                                 <Loader2 size={16} className="animate-spin" />
                               ) : (
                                 <CheckCircle2 size={16} className="text-green-500" />
                               )}
-                              Confirmar
+                              Confirm
                             </button>
                           )}
-                          {appointment.status !== "COMPLETED" && (
+                          {appointment.status !== 'COMPLETED' && (
                             <button
                               type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, "COMPLETED");
+                                onStatusChange(appointment.id, 'COMPLETED');
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
-                              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                              className="w-full px-4 py-2 text-left text-xs sm:text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
                               {loadingActionId === appointment.id ? (
                                 <Loader2 size={16} className="animate-spin" />
                               ) : (
                                 <CheckCircle2 size={16} className="text-blue-500" />
                               )}
-                              Marcar Concluído
+                              Mark Complete
                             </button>
                           )}
-                          {appointment.status !== "CANCELED" && (
+                          {appointment.status !== 'CANCELED' && (
                             <button
                               type="button"
                               onClick={() => {
@@ -179,14 +202,14 @@ export function AppointmentsTable({
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
-                              className="w-full px-4 py-2 text-left text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                              className="w-full px-4 py-2 text-left text-xs sm:text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
                             >
                               {loadingActionId === appointment.id ? (
                                 <Loader2 size={16} className="animate-spin" />
                               ) : (
                                 <AlertCircle size={16} className="text-yellow-500" />
                               )}
-                              Cancelar
+                              Cancel
                             </button>
                           )}
                           <hr className="my-2 border-border" />
@@ -197,14 +220,14 @@ export function AppointmentsTable({
                               setOpenMenuId(null);
                             }}
                             disabled={loadingActionId === appointment.id}
-                            className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                            className="w-full px-4 py-2 text-left text-xs sm:text-sm text-red-500 hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
                           >
                             {loadingActionId === appointment.id ? (
                               <Loader2 size={16} className="animate-spin" />
                             ) : (
                               <Trash2 size={16} />
                             )}
-                            Deletar
+                            Delete
                           </button>
                         </motion.div>
                       )}

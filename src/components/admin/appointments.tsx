@@ -1,15 +1,15 @@
-import { useState, useCallback, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { apiService } from "@/services/api";
-import type { IAppointment } from "@/types";
-import { AppointmentsFilters, type FilterValues } from "@/components/admin/AppointmentsFilters";
-import { AppointmentsTable } from "@/components/admin/AppointmentsTable";
-import { Pagination } from "@/components/admin/Pagination";
+import { useState, useCallback, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
+import { apiService } from '@/services/api';
+import type { IAppointment } from '@/types';
+import { AppointmentsFilters, type FilterValues } from '@/components/admin/AppointmentsFilters';
+import { AppointmentsTable } from '@/components/admin/AppointmentsTable';
+import { Pagination } from '@/components/admin/Pagination';
 import {
   useAppointmentsAdmin,
-  type AppointmentsFilters as AppointmentsFiltersType,
-} from "@/hooks/useAppointmentsAdmin";
+ type AppointmentsFilters as AppointmentsFiltersType,
+} from '@/hooks/useAppointmentsAdmin';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -20,7 +20,7 @@ export default function AppointmentsPage() {
 
   // Fetch services para os filtros
   const servicesQuery = useQuery({
-    queryKey: ["services"],
+    queryKey: ['services'],
     queryFn: () => apiService.getServices(),
   });
 
@@ -58,22 +58,22 @@ export default function AppointmentsPage() {
   // Handler para filtros
   const handleFilterChange = useCallback((newFilters: FilterValues) => {
     setFilters(newFilters);
-    setCurrentPage(1); // Reset para primeira página ao filtrar
+    setCurrentPage(1);
   }, []);
 
   // Handler para mudança de status
   const handleStatusChange = useCallback(
-    (id: string, status: IAppointment["status"]) => {
+    (id: string, status: IAppointment['status']) => {
       setLoadingActionId(id);
       updateStatusMutation.mutate(
         { id, status },
         {
           onSuccess: () => setLoadingActionId(null),
           onError: () => setLoadingActionId(null),
-        },
+        }
       );
     },
-    [updateStatusMutation],
+    [updateStatusMutation]
   );
 
   // Handler para cancelar
@@ -85,7 +85,7 @@ export default function AppointmentsPage() {
         onError: () => setLoadingActionId(null),
       });
     },
-    [cancelMutation],
+    [cancelMutation]
   );
 
   // Handler para deletar
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
     (id: string) => {
       if (
         window.confirm(
-          "Tem certeza que deseja deletar este agendamento? Esta ação não pode ser desfeita.",
+          'Are you sure you want to delete this appointment? This action cannot be undone.'
         )
       ) {
         setLoadingActionId(id);
@@ -103,7 +103,7 @@ export default function AppointmentsPage() {
         });
       }
     },
-    [deleteMutation],
+    [deleteMutation]
   );
 
   const isLoading =
@@ -113,64 +113,69 @@ export default function AppointmentsPage() {
     deleteMutation.isPending;
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 md:p-8 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-text">Gerenciar Agendamentos</h1>
-          <p className="text-text-secondary mt-1">
-            Total de agendamentos: <span className="font-semibold">{totalAppointments}</span>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="w-full min-h-screen bg-background"
+    >
+      {/* Responsivo: padding ajustado */}
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text">Manage Appointments</h1>
+          <p className="text-sm sm:text-base text-text-secondary">
+            Total appointments: <span className="font-semibold">{totalAppointments}</span>
           </p>
         </div>
-      </div>
 
-      {/* Filtros */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-card/50 border border-card rounded-lg p-4"
-      >
-        <AppointmentsFilters
-          services={servicesQuery.data || []}
-          onFilterChange={handleFilterChange}
-          loading={isLoading}
-        />
-      </motion.div>
-
-      {/* Tabela */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-card/50 border border-card rounded-lg overflow-hidden"
-      >
-        <AppointmentsTable
-          appointments={appointments}
-          onStatusChange={handleStatusChange}
-          onCancel={handleCancel}
-          onDelete={handleDelete}
-          loading={appointmentsQuery.isLoading}
-          loadingActionId={loadingActionId}
-        />
-      </motion.div>
-
-      {/* Paginação */}
-      {totalPages > 1 && (
+        {/* Filtros */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex justify-center"
+          transition={{ delay: 0.1 }}
+          className="bg-card/50 border border-card rounded-lg p-3 sm:p-4"
         >
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
+          <AppointmentsFilters
+            services={servicesQuery.data || []}
+            onFilterChange={handleFilterChange}
             loading={isLoading}
           />
         </motion.div>
-      )}
+
+        {/* Tabela - responsiva com scroll horizontal em mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-card/50 border border-card rounded-lg overflow-hidden"
+        >
+          <AppointmentsTable
+            appointments={appointments}
+            onStatusChange={handleStatusChange}
+            onCancel={handleCancel}
+            onDelete={handleDelete}
+            loading={appointmentsQuery.isLoading}
+            loadingActionId={loadingActionId}
+          />
+        </motion.div>
+
+        {/* Paginação */}
+        {totalPages > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex justify-center overflow-x-auto pb-2"
+          >
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              loading={isLoading}
+            />
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 }
