@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Search, AlertCircle, CheckCircle2, Clock, DollarSign, Loader2 } from "lucide-react";
+import { Search, AlertCircle, CheckCircle2, Clock, DollarSign, Loader2, Phone } from "lucide-react";
 import { apiService } from "@/services/api";
 import { PublicLayout } from "@/layouts/PublicLayout";
 import type { IAppointment } from "@/types";
@@ -16,6 +16,10 @@ const lookupSchema = z.object({
     .string()
     .min(1, "Código do agendamento é obrigatório")
     .min(6, "Código deve ter pelo menos 6 caracteres"),
+  customerPhone: z
+    .string()
+    .min(1, "Telefone é obrigatório")
+    .regex(/^\d{10,11}$/, "Telefone inválido (10 ou 11 dígitos)"),
 });
 
 type LookupFormInputs = z.infer<typeof lookupSchema>;
@@ -48,34 +52,54 @@ const statusConfig = {
 };
 
 export default function LookupPage() {
-  const [publicCode, setPublicCode] = useState<string | null>(null);
+  const [lookupParams, setLookupParams] = useState<{
+    publicCode: string;
+    customerPhone: string;
+  } | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<LookupFormInputs>({
     resolver: zodResolver(lookupSchema),
   });
 
+  const phoneValue = watch("customerPhone");
+
+  // Aplicar máscara de telefone (mesmo padrão usado no Step4PersonalData)
+  useEffect(() => {
+    if (phoneValue) {
+      const cleaned = phoneValue.replace(/\D/g, "");
+      if (cleaned !== phoneValue) {
+        setValue("customerPhone", cleaned);
+      }
+    }
+  }, [phoneValue, setValue]);
+
   const lookupQuery = useQuery({
-  queryKey: ['appointment-lookup', publicCode],
-  queryFn: async () => {
-    if (!publicCode) throw new Error('Public code required');
-    const response = await apiService.lookupAppointment({ publicCode });
-    return response;
-  },
-  enabled: !!publicCode,
-  staleTime: 30 * 1000,
-});
+    queryKey: ['appointment-lookup', lookupParams?.publicCode, lookupParams?.customerPhone],
+    queryFn: async () => {
+      if (!lookupParams) throw new Error('Código e telefone são obrigatórios');
+      return apiService.lookupAppointment(lookupParams);
+    },
+    enabled: !!lookupParams,
+    staleTime: 30 * 1000,
+    retry: false,
+  });
 
   const appointment = lookupQuery.data as IAppointment | undefined;
   const statusInfo = appointment ? statusConfig[appointment.status] : null;
   const StatusIcon = statusInfo ? statusInfo.icon : AlertCircle;
 
   const onSubmit = (data: LookupFormInputs) => {
-    if (data.publicCode.trim()) {
-      setPublicCode(data.publicCode.trim().toUpperCase());
+    if (data.publicCode.trim() && data.customerPhone.trim()) {
+      setLookupParams({
+        publicCode: data.publicCode.trim().toUpperCase(),
+        customerPhone: data.customerPhone.trim(),
+      });
     }
   };
 
@@ -140,6 +164,45 @@ export default function LookupPage() {
                 )}
               </div>
 
+              <div>
+                <label
+                  htmlFor="customerPhone"
+                  className="block text-sm sm:text-base font-medium text-text-secondary mb-2"
+                >
+                  Telefone usado no agendamento <span aria-label="obrigatório">*</span>
+                </label>
+                <div className="relative">
+                  <Phone
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="customerPhone"
+                    type="tel"
+                    placeholder="(11) 99999-9999"
+                    maxLength={11}
+                    {...register("customerPhone")}
+                    aria-invalid={Boolean(errors.customerPhone)}
+                    aria-describedby={errors.customerPhone ? "phone-error" : undefined}
+                    className="w-full pl-10 pr-4 py-3 sm:py-4 bg-background border-2 border-card rounded-lg text-base sm:text-lg text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  />
+                </div>
+                {errors.customerPhone && (
+                  <p
+                    id="phone-error"
+                    role="alert"
+                    className="text-sm text-red-500 mt-2 flex items-center gap-1"
+                  >
+                    <AlertCircle size={16} />
+                    {errors.customerPhone.message}
+                  </p>
+                )}
+                <p className="text-xs text-text-secondary mt-1">
+                  Usado para confirmar que o agendamento é seu (somente números)
+                </p>
+              </div>
+
               <button
                 type="submit"
                 disabled={lookupQuery.isLoading}
@@ -152,7 +215,7 @@ export default function LookupPage() {
           </motion.div>
 
           {/* Results */}
-          {publicCode && (
+          {lookupParams && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -178,14 +241,14 @@ export default function LookupPage() {
                         Agendamento não encontrado
                       </h3>
                       <p className="text-sm text-red-700 dark:text-red-300">
-                        O código "{publicCode}" não corresponde a nenhum agendamento. Verifique se o
-                        código está correto e tente novamente.
+                        O código "{lookupParams?.publicCode}" e o telefone informado não correspondem a
+                        nenhum agendamento. Verifique os dados e tente novamente.
                       </p>
                     </div>
                   </div>
                   <button
                     type="button"
-                    onClick={() => setPublicCode(null)}
+                    onClick={() => setLookupParams(null)}
                     className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                   >
                     Tentar Novamente
@@ -317,7 +380,7 @@ export default function LookupPage() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="button"
-                      onClick={() => setPublicCode(null)}
+                      onClick={() => setLookupParams(null)}
                       className="flex-1 py-3 px-4 bg-background border border-card text-text font-medium rounded-lg hover:bg-background/80 transition-colors text-sm sm:text-base min-h-[44px] flex items-center justify-center"
                     >
                       Nova Consulta
@@ -329,7 +392,7 @@ export default function LookupPage() {
           )}
 
           {/* Info Section */}
-          {!publicCode && (
+          {!lookupParams && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
