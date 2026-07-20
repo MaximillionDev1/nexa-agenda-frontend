@@ -1,58 +1,87 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { AxiosError } from "axios";
-import { PublicLayout } from "@/layouts/PublicLayout";
-import { useSchedulingForm } from "@/hooks/useSchedulingForm";
-import { Step1ServiceSelection } from "@/components/client/scheduling/Step1ServiceSelection";
-import { Step2DateSelection } from "@/components/client/scheduling/Step2DateSelection";
-import { Step3TimeSelection } from "@/components/client/scheduling/Step3TimeSelection";
-import { Step4PersonalData } from "@/components/client/scheduling/Step4PersonalData";
-import { Step5Review } from "@/components/client/scheduling/Step5Review";
-import { apiService } from "@/services/api";
-import { schedulingSteps } from "@/schemas/scheduling";
-import { CheckCircle2 } from "lucide-react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type { AxiosError } from 'axios';
+import { CheckCircle2 } from 'lucide-react';
+import { PublicLayout } from '@/layouts/PublicLayout';
+import { useSchedulingForm } from '@/hooks/useSchedulingForm';
+import { Step1ServiceSelection } from '@/components/client/scheduling/Step1ServiceSelection';
+import { Step2DateSelection } from '@/components/client/scheduling/Step2DateSelection';
+import { Step3TimeSelection } from '@/components/client/scheduling/Step3TimeSelection';
+import { Step4PersonalData } from '@/components/client/scheduling/Step4PersonalData';
+import { Step5Review } from '@/components/client/scheduling/Step5Review';
+import { apiService } from '@/services/api';
+import type { IAppointment } from '@/types';
+import { schedulingSteps } from '@/schemas/scheduling';
 
 interface ErrorResponse {
   message?: string;
   code?: string;
 }
 
+interface CreateAppointmentPayload {
+  serviceId: string;
+  appointmentDate: string;
+  startTime: string;
+  customerName: string;
+  customerPhone: string;
+  notes?: string;
+}
+
 export default function SchedulingPage() {
   const navigate = useNavigate();
-  const { currentStep, formData, updateFormData, nextStep, prevStep } = useSchedulingForm();
+  const { currentStep, formData, updateFormData, nextStep, prevStep } =
+    useSchedulingForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createAppointmentMutation = useMutation<
-    { publicCode: string },
+    IAppointment,
     AxiosError<ErrorResponse>,
-    {
-      serviceId: string;
-      appointmentDate: string;
-      startTime: string;
-      customerName: string;
-      customerPhone: string;
-      notes?: string;
-    }
+    CreateAppointmentPayload
   >({
     mutationFn: async (data) => {
-      return apiService.createAppointment(data);
+      // Normalizar a data para evitar deslocamento de timezone
+      const dateObj = new Date(data.appointmentDate);
+
+      // Garantir que estamos usando a data correta (sem timezone shift)
+      const normalizedDate = new Date(
+        dateObj.getFullYear(),
+        dateObj.getMonth(),
+        dateObj.getDate()
+      );
+
+      // Converter para ISO string apenas da data (YYYY-MM-DD)
+      const isoDate = normalizedDate.toISOString().split('T')[0];
+
+      const response = await apiService.createAppointment({
+        ...data,
+        appointmentDate: isoDate,
+      });
+
+      // Retornar o appointment, não a resposta inteira
+      if (!response.data) {
+        throw new Error('Resposta inválida do servidor');
+      }
+
+      return response.data;
     },
-    onSuccess: (data) => {
-      toast.success("Agendamento realizado com sucesso!");
-      navigate(`/scheduling/confirmation/${data.publicCode}`);
+    onSuccess: (appointment) => {
+      toast.success('Agendamento realizado com sucesso!');
+      // Usar publicCode do appointment retornado
+      navigate(`/scheduling/confirmation/${appointment.publicCode}`);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      const message = error.response?.data?.message || "Erro ao realizar agendamento";
+      const message =
+        error.response?.data?.message || 'Erro ao realizar agendamento';
       toast.error(message);
     },
   });
 
   const handleStep1Submit = () => {
     if (!formData.serviceId) {
-      toast.error("Selecione um serviço");
+      toast.error('Selecione um serviço');
       return;
     }
     nextStep();
@@ -60,7 +89,7 @@ export default function SchedulingPage() {
 
   const handleStep2Submit = () => {
     if (!formData.appointmentDate) {
-      toast.error("Selecione uma data");
+      toast.error('Selecione uma data');
       return;
     }
     nextStep();
@@ -68,7 +97,7 @@ export default function SchedulingPage() {
 
   const handleStep3Submit = () => {
     if (!formData.startTime) {
-      toast.error("Selecione um horário");
+      toast.error('Selecione um horário');
       return;
     }
     nextStep();
@@ -87,65 +116,93 @@ export default function SchedulingPage() {
       !formData.customerName ||
       !formData.customerPhone
     ) {
-      toast.error("Dados incompletos");
+      toast.error('Dados incompletos');
       return;
     }
 
     setIsSubmitting(true);
-    await createAppointmentMutation.mutateAsync({
-      serviceId: formData.serviceId,
-      appointmentDate: formData.appointmentDate,
-      startTime: formData.startTime,
-      customerName: formData.customerName,
-      customerPhone: formData.customerPhone,
-      notes: formData.notes,
-    });
-    setIsSubmitting(false);
+
+    try {
+      await createAppointmentMutation.mutateAsync({
+        serviceId: formData.serviceId,
+        appointmentDate: formData.appointmentDate,
+        startTime: formData.startTime,
+        customerName: formData.customerName,
+        customerPhone: formData.customerPhone,
+        notes: formData.notes,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <PublicLayout>
-      <div className="py-12 md:py-20">
+      <div className="py-8 sm:py-12 lg:py-20">
         <div className="container-app max-w-2xl">
-          <div className="mb-12">
-            <h1 className="text-4xl font-bold mb-3">Agende seu serviço</h1>
-            <p className="text-text-secondary">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 sm:mb-12"
+          >
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-2 sm:mb-3">
+              Agende seu serviço
+            </h1>
+            <p className="text-sm sm:text-base text-text-secondary">
               Preencha os campos abaixo para confirmar seu agendamento
             </p>
-          </div>
+          </motion.div>
 
-          <div className="mb-12">
+          {/* Progress Steps */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="mb-8 sm:mb-12"
+          >
             <div className="flex items-center justify-between relative mb-8">
               {schedulingSteps.map((step, index) => (
                 <div key={step.id} className="flex flex-col items-center flex-1">
                   <motion.button
                     type="button"
                     onClick={() => {}}
+                    disabled
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 transition-all ${
                       step.id <= currentStep
-                        ? "bg-primary text-white"
-                        : "bg-card text-text-secondary"
+                        ? 'bg-primary text-white'
+                        : 'bg-card text-text-secondary'
                     }`}
                   >
-                    {step.id < currentStep ? <CheckCircle2 className="w-5 h-5" /> : step.id}
+                    {step.id < currentStep ? (
+                      <CheckCircle2 className="w-5 h-5" />
+                    ) : (
+                      step.id
+                    )}
                   </motion.button>
                   <p className="text-xs text-center text-text-secondary">{step.title}</p>
-
                   {index < schedulingSteps.length - 1 && (
                     <div
                       className={`absolute top-5 left-1/2 w-12 h-1 transition-colors ${
-                        step.id < currentStep ? "bg-primary" : "bg-card"
+                        step.id < currentStep ? 'bg-primary' : 'bg-card'
                       }`}
-                      style={{ transform: "translateX(-50%)" }}
+                      style={{ transform: 'translateX(-50%)' }}
                     />
                   )}
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-card/50 border border-card rounded-xl p-8 backdrop-blur-sm">
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card/50 border border-card rounded-xl p-6 sm:p-8 backdrop-blur-sm"
+          >
             <AnimatePresence mode="wait">
+              {/* Step 1: Service Selection */}
               {currentStep === 1 && (
                 <motion.div
                   key="step-1"
@@ -164,7 +221,7 @@ export default function SchedulingPage() {
                     <button
                       type="button"
                       onClick={handleStep1Submit}
-                      className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Próximo
                     </button>
@@ -172,6 +229,7 @@ export default function SchedulingPage() {
                 </motion.div>
               )}
 
+              {/* Step 2: Date Selection */}
               {currentStep === 2 && (
                 <motion.div
                   key="step-2"
@@ -186,18 +244,18 @@ export default function SchedulingPage() {
                       updateFormData({ appointmentDate: date });
                     }}
                   />
-                  <div className="flex justify-between gap-3 mt-8">
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
                     <button
                       type="button"
                       onClick={prevStep}
-                      className="px-6 py-2 bg-card hover:bg-card border border-card hover:border-primary text-text font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-background border border-card hover:bg-background/80 text-text font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Voltar
                     </button>
                     <button
                       type="button"
                       onClick={handleStep2Submit}
-                      className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Próximo
                     </button>
@@ -205,6 +263,7 @@ export default function SchedulingPage() {
                 </motion.div>
               )}
 
+              {/* Step 3: Time Selection */}
               {currentStep === 3 && (
                 <motion.div
                   key="step-3"
@@ -221,18 +280,18 @@ export default function SchedulingPage() {
                       updateFormData({ startTime: time });
                     }}
                   />
-                  <div className="flex justify-between gap-3 mt-8">
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
                     <button
                       type="button"
                       onClick={prevStep}
-                      className="px-6 py-2 bg-card hover:bg-card border border-card hover:border-primary text-text font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-background border border-card hover:bg-background/80 text-text font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Voltar
                     </button>
                     <button
                       type="button"
                       onClick={handleStep3Submit}
-                      className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Próximo
                     </button>
@@ -240,6 +299,7 @@ export default function SchedulingPage() {
                 </motion.div>
               )}
 
+              {/* Step 4: Personal Data */}
               {currentStep === 4 && (
                 <motion.div
                   key="step-4"
@@ -248,12 +308,15 @@ export default function SchedulingPage() {
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Step4PersonalData initialData={formData} onSubmit={handleStep4Submit} />
-                  <div className="flex justify-between gap-3 mt-8">
+                  <Step4PersonalData
+                    initialData={formData}
+                    onSubmit={handleStep4Submit}
+                  />
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
                     <button
                       type="button"
                       onClick={prevStep}
-                      className="px-6 py-2 bg-card hover:bg-card border border-card hover:border-primary text-text font-semibold rounded-lg transition-colors"
+                      className="px-6 py-3 bg-background border border-card hover:bg-background/80 text-text font-semibold rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-h-[44px] flex items-center justify-center text-sm sm:text-base"
                     >
                       Voltar
                     </button>
@@ -261,6 +324,7 @@ export default function SchedulingPage() {
                 </motion.div>
               )}
 
+              {/* Step 5: Review */}
               {currentStep === 5 && (
                 <motion.div
                   key="step-5"
@@ -270,11 +334,11 @@ export default function SchedulingPage() {
                   transition={{ duration: 0.3 }}
                 >
                   <Step5Review
-                    serviceId={formData.serviceId || ""}
-                    appointmentDate={formData.appointmentDate || ""}
-                    startTime={formData.startTime || ""}
-                    customerName={formData.customerName || ""}
-                    customerPhone={formData.customerPhone || ""}
+                    serviceId={formData.serviceId || ''}
+                    appointmentDate={formData.appointmentDate || ''}
+                    startTime={formData.startTime || ''}
+                    customerName={formData.customerName || ''}
+                    customerPhone={formData.customerPhone || ''}
                     notes={formData.notes}
                     onConfirm={handleConfirmScheduling}
                     onBack={prevStep}
@@ -283,7 +347,7 @@ export default function SchedulingPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </div>
     </PublicLayout>
