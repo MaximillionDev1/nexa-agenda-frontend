@@ -36,48 +36,40 @@ export default function SchedulingPage() {
     useSchedulingForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const createAppointmentMutation = useMutation<
-    IAppointment,
-    AxiosError<ErrorResponse>,
-    CreateAppointmentPayload
-  >({
-    mutationFn: async (data) => {
-      // Normalizar a data para evitar deslocamento de timezone
-      const dateObj = new Date(data.appointmentDate);
+const createAppointmentMutation = useMutation<
+  IAppointment,
+  AxiosError<ErrorResponse>,
+  CreateAppointmentPayload
+>({
+  mutationFn: async (data: CreateAppointmentPayload): Promise<IAppointment> => {
+    const response = await apiService.createAppointment({
+      ...data,
+    });
 
-      // Garantir que estamos usando a data correta (sem timezone shift)
-      const normalizedDate = new Date(
-        dateObj.getFullYear(),
-        dateObj.getMonth(),
-        dateObj.getDate()
-      );
+    // Garantir que sempre retorna IAppointment, nunca undefined
+    if (!response.data) {
+      throw new Error('Resposta inválida do servidor');
+    }
 
-      // Converter para ISO string apenas da data (YYYY-MM-DD)
-      const isoDate = normalizedDate.toISOString().split('T')[0];
-
-      const response = await apiService.createAppointment({
-        ...data,
-        appointmentDate: isoDate,
-      });
-
-      // Retornar o appointment, não a resposta inteira
-      if (!response.data) {
-        throw new Error('Resposta inválida do servidor');
-      }
-
-      return response.data;
-    },
-    onSuccess: (appointment) => {
-      toast.success('Agendamento realizado com sucesso!');
-      // Usar publicCode do appointment retornado
-      navigate(`/scheduling/confirmation/${appointment.publicCode}`);
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message =
-        error.response?.data?.message || 'Erro ao realizar agendamento';
-      toast.error(message);
+    return response.data;
+  },
+onSuccess: (appointment) => {
+  toast.success('Agendamento realizado com sucesso!');
+  
+  // Passar o appointment completo via state
+  navigate(`/scheduling/confirmation/${appointment.publicCode}`, {
+    state: {
+      appointment,
     },
   });
+},
+  onError: (error) => {
+    const axiosError = error as AxiosError<ErrorResponse>;
+    const message =
+      axiosError?.response?.data?.message || 'Erro ao realizar agendamento';
+    toast.error(message);
+  },
+});
 
   const handleStep1Submit = () => {
     if (!formData.serviceId) {

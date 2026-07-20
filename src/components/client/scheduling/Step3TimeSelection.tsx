@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Clock } from "lucide-react";
+import { Clock, Loader2 } from "lucide-react";
 import { apiService } from "@/services/api";
 
 interface Step3TimeSelectionProps {
@@ -70,7 +70,7 @@ export function Step3TimeSelection({
         <h2 className="text-2xl font-bold">Selecione o horário</h2>
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <Loader2 size={32} className="animate-spin text-primary mx-auto mb-4" />
             <p className="text-text-secondary">Carregando horários...</p>
           </div>
         </div>
@@ -82,9 +82,11 @@ export function Step3TimeSelection({
     return (
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Selecione o horário</h2>
-        <div className="p-6 bg-warning/10 border border-warning/30 rounded-lg text-center">
-          <p className="text-warning font-medium mb-2">Nenhum horário disponível</p>
-          <p className="text-text-secondary text-sm">
+        <div className="p-6 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-lg text-center">
+          <p className="text-yellow-800 dark:text-yellow-200 font-medium mb-2">
+            Nenhum horário disponível
+          </p>
+          <p className="text-sm text-yellow-700 dark:text-yellow-300">
             Não há horários disponíveis para esta data. Tente selecionar outro dia.
           </p>
         </div>
@@ -92,20 +94,25 @@ export function Step3TimeSelection({
     );
   }
 
-  const formattedDate = format(new Date(appointmentDate), "dd/MM/yyyy", {
-    locale: ptBR,
-  });
+  // CORREÇÃO: Fazer parse seguro da data sem timezone shift
+  const formatDateSafely = (dateString: string): string => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return format(date, 'dd/MM/yyyy', { locale: ptBR });
+  };
+
+  const formattedDate = formatDateSafely(appointmentDate);
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Selecione o horário</h2>
 
       {/* Informações da Data */}
-      <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
-        <p className="text-sm text-text-secondary mb-1">Data selecionada:</p>
-        <p className="text-lg font-semibold text-primary">{formattedDate}</p>
+      <div className="p-4 sm:p-6 bg-primary/10 border border-primary/30 rounded-lg">
+        <p className="text-xs sm:text-sm text-text-secondary mb-1">Data selecionada:</p>
+        <p className="text-lg sm:text-xl font-semibold text-primary">{formattedDate}</p>
         {durationMinutes > 0 && (
-          <p className="text-sm text-text-secondary mt-2">
+          <p className="text-xs sm:text-sm text-text-secondary mt-2">
             Duração do serviço: {durationMinutes} minutos
           </p>
         )}
@@ -114,7 +121,7 @@ export function Step3TimeSelection({
       {/* Grid de Horários */}
       <div className="space-y-3">
         <p className="text-sm text-text-secondary">Horários disponíveis:</p>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
           {slots.map((slot) => (
             <motion.button
               key={`slot-${slot}`}
@@ -122,10 +129,10 @@ export function Step3TimeSelection({
               onClick={() => onSelectTime(slot)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`p-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
+              className={`p-2 sm:p-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1 sm:gap-2 min-h-[44px] text-sm sm:text-base ${
                 selectedTime === slot
-                  ? "bg-primary text-white border-primary"
-                  : "bg-card border border-card hover:border-primary hover:text-primary"
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-card border border-card hover:border-primary hover:text-primary'
               }`}
               aria-pressed={selectedTime === slot}
             >
@@ -141,10 +148,10 @@ export function Step3TimeSelection({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 bg-success/10 border border-success/30 rounded-lg"
+          className="p-4 sm:p-6 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg"
         >
-          <p className="text-sm text-text-secondary mb-1">Horário selecionado:</p>
-          <p className="text-lg font-semibold text-success">
+          <p className="text-xs sm:text-sm text-text-secondary mb-1">Horário selecionado:</p>
+          <p className="text-lg sm:text-xl font-semibold text-green-700 dark:text-green-400">
             {selectedTime} ({durationMinutes} minutos)
           </p>
         </motion.div>

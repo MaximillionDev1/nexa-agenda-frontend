@@ -39,15 +39,25 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
   };
 
   const handleSelectDate = (date: Date) => {
-    onSelectDate(format(date, "yyyy-MM-dd"));
+    // CORREÇÃO: Usar year, month, date diretamente para evitar timezone shift
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
+    
+    onSelectDate(dateString);
   };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    );
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+    );
   };
 
   return (
@@ -59,18 +69,16 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
         <button
           type="button"
           onClick={handlePrevMonth}
-          className="p-2 hover:bg-card rounded-lg transition-colors"
+          className="p-2 hover:bg-card rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           aria-label="Mês anterior"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-
         <h3 className="text-lg font-semibold capitalize">{monthName}</h3>
-
         <button
           type="button"
           onClick={handleNextMonth}
-          className="p-2 hover:bg-card rounded-lg transition-colors"
+          className="p-2 hover:bg-card rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           aria-label="Próximo mês"
         >
           <ChevronRight className="w-5 h-5" />
@@ -80,7 +88,10 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
       {/* Dias da Semana */}
       <div className="grid grid-cols-7 gap-2 mb-4">
         {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"].map((day) => (
-          <div key={day} className="text-center text-sm font-semibold text-text-secondary py-2">
+          <div
+            key={day}
+            className="text-center text-sm font-semibold text-text-secondary py-2"
+          >
             {day}
           </div>
         ))}
@@ -89,9 +100,14 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
       {/* Calendário */}
       <div className="grid grid-cols-7 gap-2">
         {days.map((date, index) => {
-          const dateKey = date ? format(date, "yyyy-MM-dd") : `empty-${index}`;
+          const dateKey = date
+            ? `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+            : `empty-${index}`;
           const isValid = isValidDay(date);
-          const isSelected = date && selectedDate === format(date, "yyyy-MM-dd");
+          const isSelected =
+            date &&
+            selectedDate ===
+              `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
           return (
             <motion.button
@@ -105,7 +121,7 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
               disabled={!isValid}
               whileHover={isValid ? { scale: 1.05 } : {}}
               whileTap={isValid ? { scale: 0.95 } : {}}
-              className={`p-3 rounded-lg text-sm font-medium transition-all ${
+              className={`p-3 rounded-lg text-sm font-medium transition-all min-h-[44px] flex items-center justify-center ${
                 !date
                   ? "invisible"
                   : isSelected
@@ -114,7 +130,9 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
                       ? "bg-card hover:bg-card border border-card hover:border-primary cursor-pointer"
                       : "bg-card/30 text-text-secondary/50 cursor-not-allowed opacity-50"
               }`}
-              aria-label={date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : undefined}
+              aria-label={
+                date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : undefined
+              }
             >
               {date ? date.getDate() : ""}
             </motion.button>
@@ -127,7 +145,9 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
         <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
           <p className="text-sm text-text-secondary">Data selecionada:</p>
           <p className="text-lg font-semibold text-primary">
-            {format(new Date(selectedDate), "dd/MM/yyyy", { locale: ptBR })}
+            {format(new Date(`${selectedDate}T00:00:00`), "dd/MM/yyyy", {
+              locale: ptBR,
+            })}
           </p>
         </div>
       )}

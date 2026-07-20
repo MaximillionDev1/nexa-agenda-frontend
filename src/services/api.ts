@@ -83,42 +83,39 @@ class ApiService {
     return response.data.data ?? ({} as IService)
   }
 
-  async toggleServiceStatus(id: string): Promise<IService> {
-    const response = await this.api.patch<IApiResponse<IService>>(
-      `/services/${id}/toggle`,
-    )
-    return response.data.data ?? ({} as IService)
-  }
+ async toggleServiceStatus(id: string): Promise<IService> {
+  const response = await this.api.patch<IApiResponse<IService>>(
+    `/services/${id}/toggle`,
+  )
+  return response.data.data ?? ({} as IService)
+}
+
+// Adicionar este método:
+async deleteService(id: string): Promise<void> {
+  await this.api.delete(`/services/${id}`)
+}
+
+  
 
   // ============================================
   // AGENDAMENTOS PÚBLICOS
   // ============================================
 
   async createAppointment(data: ICreateAppointmentRequest): Promise<IApiResponse<IAppointment>> {
-  // Converter a data do cliente para ISO sem alterar o dia
-  const appointmentDate = new Date(data.appointmentDate);
-  
-  // Ajustar para midnight UTC do dia selecionado
-  const utcDate = new Date(
-    Date.UTC(
-      appointmentDate.getFullYear(),
-      appointmentDate.getMonth(),
-      appointmentDate.getDate(),
-      appointmentDate.getHours(),
-      appointmentDate.getMinutes(),
-      appointmentDate.getSeconds()
-    )
-  );
+    
+    const response = await this.api.post<IApiResponse<IAppointment>>(
+      '/appointments',
+      {
+        ...data,
 
-  const response = await this.api.post<IApiResponse<IAppointment>>(
-    '/appointments',
-    {
-      ...data,
-      appointmentDate: utcDate.toISOString(),
-    }
-  );
-  return response.data;
-}
+        appointmentDate:
+          typeof data.appointmentDate === 'string'
+            ? data.appointmentDate
+            : (data.appointmentDate as Date).toISOString().split('T')[0],
+      },
+    )
+    return response.data
+  }
 
   async lookupAppointment(data: ILookupAppointmentRequest): Promise<IAppointment> {
     const response = await this.api.post<IApiResponse<IAppointment>>(
