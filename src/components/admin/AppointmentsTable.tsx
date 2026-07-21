@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import type { IAppointment } from "@/types";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  Trash2,
+  Loader2,
   MoreVertical,
   Phone,
-  Loader2,
-} from 'lucide-react';
-import type { IAppointment } from '@/types';
-import { AppointmentStatusBadge } from './AppointmentStatusBadge';
-import { motion, AnimatePresence } from 'framer-motion';
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
+import { AppointmentStatusBadge } from "./AppointmentStatusBadge";
 
 interface AppointmentsTableProps {
   appointments: IAppointment[];
-  onStatusChange: (id: string, status: IAppointment['status']) => void;
+  onStatusChange: (id: string, status: IAppointment["status"]) => void;
   onCancel: (id: string) => void;
   onDelete: (id: string) => void;
   loading?: boolean;
@@ -94,9 +94,7 @@ export function AppointmentsTable({
                     </div>
                     {/* Mobile: mostrar serviço aqui */}
                     <div className="sm:hidden mt-1 pt-1 border-t border-card/50">
-                      <p className="font-medium text-text text-xs">
-                        {appointment.service.name}
-                      </p>
+                      <p className="font-medium text-text text-xs">{appointment.service.name}</p>
                       <p className="text-xs text-text-secondary">
                         {appointment.service.duration} min
                       </p>
@@ -113,12 +111,12 @@ export function AppointmentsTable({
                 </th>
                 <td className="px-2 sm:px-4 py-3">
                   <p className="text-text text-xs sm:text-sm">
-                    {format(new Date(appointment.appointmentDate), 'dd MMM', {
+                    {format(new Date(appointment.appointmentDate), "dd MMM", {
                       locale: ptBR,
                     })}
                   </p>
                   <p className="text-xs sm:text-sm text-text-secondary">
-                    {format(new Date(appointment.appointmentDate), 'HH:mm')}
+                    {format(new Date(appointment.appointmentDate), "HH:mm")}
                   </p>
                 </td>
                 <td className="hidden md:table-cell px-4 py-3">
@@ -152,11 +150,11 @@ export function AppointmentsTable({
                             <AppointmentStatusBadge status={appointment.status} />
                           </div>
 
-                          {appointment.status !== 'SCHEDULED' && (
+                          {appointment.status !== "SCHEDULED" && (
                             <button
                               type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, 'SCHEDULED');
+                                onStatusChange(appointment.id, "SCHEDULED");
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
@@ -170,11 +168,11 @@ export function AppointmentsTable({
                               Mark Scheduled
                             </button>
                           )}
-                          {appointment.status !== 'CONFIRMED' && (
+                          {appointment.status !== "CONFIRMED" && (
                             <button
                               type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, 'CONFIRMED');
+                                onStatusChange(appointment.id, "CONFIRMED");
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
@@ -188,11 +186,11 @@ export function AppointmentsTable({
                               Confirm
                             </button>
                           )}
-                          {appointment.status !== 'COMPLETED' && (
+                          {appointment.status !== "COMPLETED" && (
                             <button
                               type="button"
                               onClick={() => {
-                                onStatusChange(appointment.id, 'COMPLETED');
+                                onStatusChange(appointment.id, "COMPLETED");
                                 setOpenMenuId(null);
                               }}
                               disabled={loadingActionId === appointment.id}
@@ -206,7 +204,7 @@ export function AppointmentsTable({
                               Mark Complete
                             </button>
                           )}
-                          {appointment.status !== 'CANCELED' && (
+                          {appointment.status !== "CANCELED" && (
                             <button
                               type="button"
                               onClick={() => {

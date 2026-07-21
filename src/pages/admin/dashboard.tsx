@@ -1,20 +1,20 @@
+import { apiService } from "@/services/api";
+import type { IDashboardData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
 import {
+  AlertCircle,
   CalendarCheck,
   CalendarClock,
   CheckCircle2,
-  XCircle,
-  DollarSign,
-  TrendingUp,
-  Loader2,
-  AlertCircle,
   Clock,
+  DollarSign,
+  Loader2,
+  TrendingUp,
+  XCircle,
 } from "lucide-react";
-import { apiService } from "@/services/api";
-import type { IDashboardData } from "@/types";
 
 function formatCurrency(value: number | string) {
   const numValue = typeof value === "string" ? Number.parseFloat(value) : Number(value);
@@ -95,7 +95,10 @@ export default function DashboardPage() {
         {/* Erro */}
         {isError && (
           <div className="bg-red-100 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700 rounded-lg p-6 flex items-start gap-3">
-            <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" size={24} />
+            <AlertCircle
+              className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+              size={24}
+            />
             <div>
               <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-1">
                 Não foi possível carregar o dashboard
@@ -187,9 +190,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                <p className="text-text-secondary text-sm">
-                  Nenhum agendamento futuro encontrado.
-                </p>
+                <p className="text-text-secondary text-sm">Nenhum agendamento futuro encontrado.</p>
               )}
             </div>
           </>

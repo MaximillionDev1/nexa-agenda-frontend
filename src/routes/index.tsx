@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
-import { Suspense, lazy } from "react";
 import { AdminLayout } from "@/layouts/AdminLayout";
+import { Suspense, lazy } from "react";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 // Lazy load pages
 const HomePage = lazy(() => import("@/pages/client/home"));

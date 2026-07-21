@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { Search, AlertCircle, CheckCircle2, Clock, DollarSign, Loader2, Phone } from "lucide-react";
-import { apiService } from "@/services/api";
 import { PublicLayout } from "@/layouts/PublicLayout";
+import { apiService } from "@/services/api";
 import type { IAppointment } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
+import { AlertCircle, CheckCircle2, Clock, DollarSign, Loader2, Phone, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const lookupSchema = z.object({
   publicCode: z
@@ -80,9 +80,9 @@ export default function LookupPage() {
   }, [phoneValue, setValue]);
 
   const lookupQuery = useQuery({
-    queryKey: ['appointment-lookup', lookupParams?.publicCode, lookupParams?.customerPhone],
+    queryKey: ["appointment-lookup", lookupParams?.publicCode, lookupParams?.customerPhone],
     queryFn: async () => {
-      if (!lookupParams) throw new Error('Código e telefone são obrigatórios');
+      if (!lookupParams) throw new Error("Código e telefone são obrigatórios");
       return apiService.lookupAppointment(lookupParams);
     },
     enabled: !!lookupParams,
@@ -241,8 +241,8 @@ export default function LookupPage() {
                         Agendamento não encontrado
                       </h3>
                       <p className="text-sm text-red-700 dark:text-red-300">
-                        O código "{lookupParams?.publicCode}" e o telefone informado não correspondem a
-                        nenhum agendamento. Verifique os dados e tente novamente.
+                        O código "{lookupParams?.publicCode}" e o telefone informado não
+                        correspondem a nenhum agendamento. Verifique os dados e tente novamente.
                       </p>
                     </div>
                   </div>

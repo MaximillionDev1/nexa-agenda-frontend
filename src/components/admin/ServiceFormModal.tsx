@@ -1,11 +1,11 @@
+import type { ServiceFormData } from "@/hooks/useServicesAdmin";
+import type { IService } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Loader2, X } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { X, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
-import type { IService } from "@/types";
-import type { ServiceFormData } from "@/hooks/useServicesAdmin";
 
 const serviceSchema = z.object({
   name: z.string().min(1, "Service name is required").min(3, "Name must be at least 3 characters"),

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
 import { format, isBefore, startOfToday } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 interface Step2DateSelectionProps {
   selectedDate?: string;
@@ -44,20 +44,16 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${day}`;
-    
+
     onSelectDate(dateString);
   };
 
   const handlePrevMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
-    );
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
-    );
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
 
   return (
@@ -88,10 +84,7 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
       {/* Dias da Semana */}
       <div className="grid grid-cols-7 gap-2 mb-4">
         {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"].map((day) => (
-          <div
-            key={day}
-            className="text-center text-sm font-semibold text-text-secondary py-2"
-          >
+          <div key={day} className="text-center text-sm font-semibold text-text-secondary py-2">
             {day}
           </div>
         ))}
@@ -130,9 +123,7 @@ export function Step2DateSelection({ selectedDate, onSelectDate }: Step2DateSele
                       ? "bg-card hover:bg-card border border-card hover:border-primary cursor-pointer"
                       : "bg-card/30 text-text-secondary/50 cursor-not-allowed opacity-50"
               }`}
-              aria-label={
-                date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : undefined
-              }
+              aria-label={date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : undefined}
             >
               {date ? date.getDate() : ""}
             </motion.button>

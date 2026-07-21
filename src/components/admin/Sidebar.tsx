@@ -1,15 +1,8 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/auth';
-import {
-  LayoutDashboard,
-  Calendar,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from "@/contexts/auth";
+import { AnimatePresence, motion } from "framer-motion";
+import { Calendar, LayoutDashboard, LogOut, Menu, Settings, X } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export function Sidebar() {
   const location = useLocation();
@@ -20,18 +13,18 @@ export function Sidebar() {
 
   const navigationItems = [
     {
-      label: 'Dashboard',
-      path: '/admin/dashboard',
+      label: "Dashboard",
+      path: "/admin/dashboard",
       icon: <LayoutDashboard size={20} />,
     },
     {
-      label: 'Appointments',
-      path: '/admin/appointments',
+      label: "Appointments",
+      path: "/admin/appointments",
       icon: <Calendar size={20} />,
     },
     {
-      label: 'Services',
-      path: '/admin/services',
+      label: "Services",
+      path: "/admin/services",
       icon: <Settings size={20} />,
     },
   ];
@@ -70,7 +63,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed md:relative left-0 top-0 h-screen w-72 bg-card border-r border-card z-40 md:z-auto flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Header */}
@@ -95,8 +88,8 @@ export function Sidebar() {
               onClick={() => setIsOpen(false)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
                 isActive(item.path)
-                  ? 'bg-primary text-white font-medium'
-                  : 'text-text hover:bg-background'
+                  ? "bg-primary text-white font-medium"
+                  : "text-text hover:bg-background"
               }`}
             >
               {item.icon}
@@ -127,9 +120,7 @@ export function Sidebar() {
             <LogOut size={20} />
             <span>Logout</span>
           </button>
-          <p className="text-xs text-text-secondary px-2 py-2">
-            v1.0.0 • Built with care
-          </p>
+          <p className="text-xs text-text-secondary px-2 py-2">v1.0.0 • Built with care</p>
         </div>
       </aside>
     </>

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import type { SchedulingFormData } from "@/schemas/scheduling";
+import { useState } from "react";
 
 interface SchedulingFormState extends Partial<SchedulingFormData> {
   appointmentDate?: string;

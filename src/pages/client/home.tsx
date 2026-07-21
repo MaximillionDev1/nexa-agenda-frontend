@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { PublicLayout } from "@/layouts/PublicLayout";
 import { PremiumHero } from "@/components/client/PremiumHero";
 import { Button } from "@/components/ui/Button";
+import { PublicLayout } from "@/layouts/PublicLayout";
 import { apiService } from "@/services/api";
-import type { IService, INextAvailableSlot } from "@/types";
-import { Clock, MapPin, Scissors, Zap, Droplets, Check } from "lucide-react";
+import type { INextAvailableSlot, IService } from "@/types";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { Check, Clock, Droplets, MapPin, Scissors, Zap } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
   Scissors: <Scissors className="w-8 h-8" />,

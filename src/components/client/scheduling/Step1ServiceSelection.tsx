@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import { apiService } from "@/services/api";
 import type { IService } from "@/types";
-import { Scissors, Zap, Droplets, Check } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Check, Droplets, Scissors, Zap } from "lucide-react";
 
 interface Step1ServiceSelectionProps {
   selectedServiceId?: string;

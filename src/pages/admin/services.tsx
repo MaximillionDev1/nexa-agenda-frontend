@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
-import { Plus } from "lucide-react";
-import { motion } from "framer-motion";
-import type { IService } from "@/types";
-import { ServicesTable } from "@/components/admin/ServicesTable";
 import { ServiceFormModal } from "@/components/admin/ServiceFormModal";
-import { useServicesAdmin, type ServiceFormData } from "@/hooks/useServicesAdmin";
+import { ServicesTable } from "@/components/admin/ServicesTable";
+import { type ServiceFormData, useServicesAdmin } from "@/hooks/useServicesAdmin";
+import type { IService } from "@/types";
+import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
+import { useCallback, useState } from "react";
 
 export default function ServicesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);

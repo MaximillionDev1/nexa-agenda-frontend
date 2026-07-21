@@ -1,10 +1,19 @@
-import { motion } from "framer-motion";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { apiService } from "@/services/api";
-import { CheckCircle, Calendar, Clock, User, Phone, FileText, ArrowLeft, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  Clock,
+  FileText,
+  Loader2,
+  Phone,
+  User,
+} from "lucide-react";
 
 interface Step5ReviewProps {
   serviceId: string;
@@ -44,20 +53,20 @@ export function Step5Review({
 
   // CORREÇÃO: Fazer parse seguro da data sem timezone shift
   const formatDateSafely = (dateString: string): string => {
-    const [year, month, day] = dateString.split('-').map(Number);
+    const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day);
-    return format(date, 'dd/MM/yyyy', { locale: ptBR });
+    return format(date, "dd/MM/yyyy", { locale: ptBR });
   };
 
   const formattedDate = formatDateSafely(appointmentDate);
 
   // CORREÇÃO: Calcular endTime sem timezone shift
   const calculateEndTime = (startTimeStr: string, durationMinutes: number): string => {
-    const [hours, minutes] = startTimeStr.split(':').map(Number);
+    const [hours, minutes] = startTimeStr.split(":").map(Number);
     const totalMinutes = hours * 60 + minutes + durationMinutes;
     const endHours = Math.floor(totalMinutes / 60);
     const endMinutes = totalMinutes % 60;
-    return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
+    return `${String(endHours).padStart(2, "0")}:${String(endMinutes).padStart(2, "0")}`;
   };
 
   const endTime = calculateEndTime(startTime, service.duration);
@@ -112,9 +121,12 @@ export function Step5Review({
             <div>
               <p className="text-xs sm:text-sm text-text-secondary">Preço</p>
               <p className="font-semibold text-primary text-base sm:text-lg">
-                R$ {typeof service.price === 'string' 
+                R${" "}
+                {typeof service.price === "string"
                   ? Number.parseFloat(service.price).toFixed(2)
-                  : typeof service.price === 'number' ? (service.price as number).toFixed(2) : '0.00'}
+                  : typeof service.price === "number"
+                    ? (service.price as number).toFixed(2)
+                    : "0.00"}
               </p>
             </div>
           </div>
@@ -159,10 +171,18 @@ export function Step5Review({
 
       {/* Terms Card */}
       <div className="bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-xl p-4">
-        <p className="text-xs sm:text-sm text-text-secondary mb-1">Ao continuar, você concorda com</p>
+        <p className="text-xs sm:text-sm text-text-secondary mb-1">
+          Ao continuar, você concorda com
+        </p>
         <p className="text-xs sm:text-sm font-medium text-text">
-          nossa <span className="text-green-700 dark:text-green-400 font-semibold">política de privacidade</span> e{" "}
-          <span className="text-green-700 dark:text-green-400 font-semibold">termos de serviço</span>
+          nossa{" "}
+          <span className="text-green-700 dark:text-green-400 font-semibold">
+            política de privacidade
+          </span>{" "}
+          e{" "}
+          <span className="text-green-700 dark:text-green-400 font-semibold">
+            termos de serviço
+          </span>
         </p>
       </div>
 

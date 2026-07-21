@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight, Zap, Shield, Clock } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Clock, Shield, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function PremiumHero() {
   const navigate = useNavigate();

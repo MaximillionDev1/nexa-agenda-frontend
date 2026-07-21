@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Edit2, Trash2, MoreVertical, ToggleRight, Loader2 } from 'lucide-react';
-import type { IService } from '@/types';
-import { motion, AnimatePresence } from 'framer-motion';
+import type { IService } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
+import { Edit2, Loader2, MoreVertical, ToggleRight, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface ServicesTableProps {
   services: IService[];
@@ -13,8 +13,8 @@ interface ServicesTableProps {
 }
 
 function formatPrice(price: string | number): string {
-  const numPrice = typeof price === 'string' ? Number.parseFloat(price) : price;
-  return Number.isNaN(numPrice) ? '0.00' : numPrice.toFixed(2);
+  const numPrice = typeof price === "string" ? Number.parseFloat(price) : price;
+  return Number.isNaN(numPrice) ? "0.00" : numPrice.toFixed(2);
 }
 
 export function ServicesTable({
@@ -111,8 +111,8 @@ export function ServicesTable({
                     disabled={loadingActionId === service.id}
                     className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium transition-colors flex items-center gap-1 ${
                       service.isActive
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200'
-                        : 'bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-400 hover:bg-slate-200'
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200"
+                        : "bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-400 hover:bg-slate-200"
                     } disabled:opacity-50`}
                   >
                     {loadingActionId === service.id ? (
@@ -120,16 +120,14 @@ export function ServicesTable({
                     ) : (
                       <ToggleRight size={14} />
                     )}
-                    {service.isActive ? 'Active' : 'Inactive'}
+                    {service.isActive ? "Active" : "Inactive"}
                   </button>
                 </td>
                 <td className="px-2 sm:px-4 py-3">
                   <div className="relative">
                     <button
                       type="button"
-                      onClick={() =>
-                        setOpenMenuId(openMenuId === service.id ? null : service.id)
-                      }
+                      onClick={() => setOpenMenuId(openMenuId === service.id ? null : service.id)}
                       className="p-2 hover:bg-background rounded-lg transition-colors"
                       aria-label="Open actions menu"
                       disabled={Boolean(loadingActionId)}
@@ -157,8 +155,8 @@ export function ServicesTable({
                               disabled={loadingActionId === service.id}
                               className={`w-full px-2 py-1 rounded text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
                                 service.isActive
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-slate-100 text-slate-700'
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-slate-100 text-slate-700"
                               } disabled:opacity-50`}
                             >
                               {loadingActionId === service.id ? (
@@ -166,7 +164,7 @@ export function ServicesTable({
                               ) : (
                                 <ToggleRight size={12} />
                               )}
-                              {service.isActive ? 'Active' : 'Inactive'}
+                              {service.isActive ? "Active" : "Inactive"}
                             </button>
                           </div>
 

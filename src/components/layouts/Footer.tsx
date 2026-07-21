@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -15,9 +15,7 @@ export function Footer() {
               <span className="text-3xl">📅</span>
               <div>
                 <h3 className="font-bold text-lg text-text">Nexa Agenda</h3>
-                <p className="text-xs sm:text-sm text-text-secondary">
-                  Plataforma de agendamento
-                </p>
+                <p className="text-xs sm:text-sm text-text-secondary">Plataforma de agendamento</p>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-text-secondary">
@@ -69,11 +67,7 @@ export function Footer() {
             <h4 className="font-semibold text-text mb-4">Suporte</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
-                <Phone
-                  size={16}
-                  className="text-primary flex-shrink-0 mt-0.5"
-                  aria-hidden="true"
-                />
+                <Phone size={16} className="text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <a
                   href="tel:+5511949805847"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
@@ -82,11 +76,7 @@ export function Footer() {
                 </a>
               </li>
               <li className="flex items-start gap-2">
-                <Mail
-                  size={16}
-                  className="text-primary flex-shrink-0 mt-0.5"
-                  aria-hidden="true"
-                />
+                <Mail size={16} className="text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <a
                   href="mailto:support@nexaagenda.com"
                   className="text-text-secondary hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded px-1"
@@ -100,9 +90,7 @@ export function Footer() {
                   className="text-primary flex-shrink-0 mt-0.5"
                   aria-hidden="true"
                 />
-                <span className="text-text-secondary">
-                  São Paulo, SP, Brasil
-                </span>
+                <span className="text-text-secondary">São Paulo, SP, Brasil</span>
               </li>
             </ul>
           </div>
@@ -144,9 +132,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-text-secondary">
-          <p>
-            &copy; {currentYear} Nexa Agenda. Todos os direitos reservados.
-          </p>
+          <p>&copy; {currentYear} Nexa Agenda. Todos os direitos reservados.</p>
           <p>
             Desenvolvido com <span className="text-primary">❤️</span> para melhor agendamento
           </p>

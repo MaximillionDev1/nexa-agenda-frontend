@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import type { IAdmin, ILoginRequest, ILoginResponse } from "@/types";
 import { apiService } from "@/services/api";
+import type { IAdmin, ILoginRequest, ILoginResponse } from "@/types";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface IAuthContext {
   admin: IAdmin | null;

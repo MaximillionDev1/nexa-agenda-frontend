@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { User, Phone, FileText } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { FileText, Phone, User } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Schema que aceita formatação
 const personalDataSchema = z.object({
@@ -17,10 +17,7 @@ const personalDataSchema = z.object({
     .string()
     .min(1, "Telefone é obrigatório")
     .transform((val) => val.replace(/\D/g, "")) // Remove formatting
-    .refine(
-      (val) => /^\d{10,11}$/.test(val),
-      "Telefone inválido (10 ou 11 dígitos)"
-    ),
+    .refine((val) => /^\d{10,11}$/.test(val), "Telefone inválido (10 ou 11 dígitos)"),
   notes: z
     .string()
     .max(500, "Observação deve ter no máximo 500 caracteres")
@@ -94,7 +91,10 @@ export function Step4PersonalData({ initialData, onSubmit }: Step4PersonalDataPr
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
         {/* Nome */}
         <div className="space-y-2">
-          <label htmlFor="customerName" className="flex items-center gap-2 text-sm font-medium text-text">
+          <label
+            htmlFor="customerName"
+            className="flex items-center gap-2 text-sm font-medium text-text"
+          >
             <User className="w-4 h-4" />
             Nome completo <span className="text-red-500">*</span>
           </label>
@@ -110,7 +110,10 @@ export function Step4PersonalData({ initialData, onSubmit }: Step4PersonalDataPr
 
         {/* Telefone */}
         <div className="space-y-2">
-          <label htmlFor="customerPhone" className="flex items-center gap-2 text-sm font-medium text-text">
+          <label
+            htmlFor="customerPhone"
+            className="flex items-center gap-2 text-sm font-medium text-text"
+          >
             <Phone className="w-4 h-4" />
             Telefone <span className="text-red-500">*</span>
           </label>
@@ -122,9 +125,7 @@ export function Step4PersonalData({ initialData, onSubmit }: Step4PersonalDataPr
             error={errors.customerPhone?.message}
             maxLength={15}
           />
-          <p className="text-xs text-text-secondary">
-            Formato: (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
-          </p>
+          <p className="text-xs text-text-secondary">Formato: (XX) XXXXX-XXXX ou (XX) XXXX-XXXX</p>
         </div>
 
         {/* Observação */}
@@ -141,18 +142,12 @@ export function Step4PersonalData({ initialData, onSubmit }: Step4PersonalDataPr
             rows={4}
             maxLength={500}
           />
-          {errors.notes && (
-            <p className="text-sm text-red-500">{errors.notes.message}</p>
-          )}
+          {errors.notes && <p className="text-sm text-red-500">{errors.notes.message}</p>}
           <p className="text-xs text-text-secondary">Máximo de 500 caracteres</p>
         </div>
 
         {/* Botão Enviar */}
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-full mt-6 min-h-[44px]"
-        >
+        <Button type="submit" variant="primary" className="w-full mt-6 min-h-[44px]">
           Continuar para revisão
         </Button>
       </form>

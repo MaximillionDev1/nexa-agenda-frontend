@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/auth';
-import { PublicLayout } from '@/layouts/PublicLayout';
+import { useAuth } from "@/contexts/auth";
+import { PublicLayout } from "@/layouts/PublicLayout";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type LoginFormInputs = z.infer<typeof loginSchema>;
@@ -35,10 +35,10 @@ export default function LoginPage() {
 
     try {
       await login({ email: data.email, password: data.password });
-      navigate('/admin/dashboard');
+      navigate("/admin/dashboard");
     } catch (error) {
       const err = error as { message?: string };
-      setErrorMessage(err?.message || 'Invalid credentials');
+      setErrorMessage(err?.message || "Invalid credentials");
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +69,10 @@ export default function LoginPage() {
               aria-live="polite"
               className="mb-4 p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg flex items-start gap-3"
             >
-              <AlertCircle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle
+                size={20}
+                className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+              />
               <p className="text-sm sm:text-base text-red-800 dark:text-red-200">{errorMessage}</p>
             </motion.div>
           )}
@@ -78,28 +81,21 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-text-secondary mb-1"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-1">
                 Email Address <span aria-label="required">*</span>
               </label>
               <input
                 id="email"
                 type="email"
                 placeholder="admin@example.com"
-                {...register('email')}
+                {...register("email")}
                 aria-invalid={Boolean(errors.email)}
-                aria-describedby={errors.email ? 'email-error' : undefined}
+                aria-describedby={errors.email ? "email-error" : undefined}
                 disabled={isLoading}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background border border-card rounded-lg text-sm sm:text-base text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all disabled:opacity-50"
               />
               {errors.email && (
-                <p
-                  id="email-error"
-                  role="alert"
-                  className="text-xs sm:text-sm text-red-500 mt-1"
-                >
+                <p id="email-error" role="alert" className="text-xs sm:text-sm text-red-500 mt-1">
                   {errors.email.message}
                 </p>
               )}
@@ -117,9 +113,9 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                {...register('password')}
+                {...register("password")}
                 aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? 'password-error' : undefined}
+                aria-describedby={errors.password ? "password-error" : undefined}
                 disabled={isLoading}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-background border border-card rounded-lg text-sm sm:text-base text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all disabled:opacity-50"
               />
@@ -155,7 +151,7 @@ export default function LoginPage() {
               className="w-full px-4 py-2 sm:py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base min-h-[44px]"
             >
               {isLoading && <Loader2 size={18} className="animate-spin" />}
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 

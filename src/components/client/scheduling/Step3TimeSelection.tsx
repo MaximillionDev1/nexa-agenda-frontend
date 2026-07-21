@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { apiService } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { motion } from "framer-motion";
 import { Clock, Loader2 } from "lucide-react";
-import { apiService } from "@/services/api";
+import { useEffect, useState } from "react";
 
 interface Step3TimeSelectionProps {
   serviceId?: string;
@@ -96,9 +96,9 @@ export function Step3TimeSelection({
 
   // CORREÇÃO: Fazer parse seguro da data sem timezone shift
   const formatDateSafely = (dateString: string): string => {
-    const [year, month, day] = dateString.split('-').map(Number);
+    const [year, month, day] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day);
-    return format(date, 'dd/MM/yyyy', { locale: ptBR });
+    return format(date, "dd/MM/yyyy", { locale: ptBR });
   };
 
   const formattedDate = formatDateSafely(appointmentDate);
@@ -131,8 +131,8 @@ export function Step3TimeSelection({
               whileTap={{ scale: 0.95 }}
               className={`p-2 sm:p-3 rounded-lg font-medium transition-all flex items-center justify-center gap-1 sm:gap-2 min-h-[44px] text-sm sm:text-base ${
                 selectedTime === slot
-                  ? 'bg-primary text-white border border-primary'
-                  : 'bg-card border border-card hover:border-primary hover:text-primary'
+                  ? "bg-primary text-white border border-primary"
+                  : "bg-card border border-card hover:border-primary hover:text-primary"
               }`}
               aria-pressed={selectedTime === slot}
             >

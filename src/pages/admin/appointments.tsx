@@ -1,15 +1,15 @@
-import { useState, useCallback, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { apiService } from "@/services/api";
-import type { IAppointment } from "@/types";
 import { AppointmentsFilters, type FilterValues } from "@/components/admin/AppointmentsFilters";
 import { AppointmentsTable } from "@/components/admin/AppointmentsTable";
 import { Pagination } from "@/components/admin/Pagination";
 import {
-  useAppointmentsAdmin,
   type AppointmentsFilters as AppointmentsFiltersType,
+  useAppointmentsAdmin,
 } from "@/hooks/useAppointmentsAdmin";
+import { apiService } from "@/services/api";
+import type { IAppointment } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { useCallback, useMemo, useState } from "react";
 
 const ITEMS_PER_PAGE = 10;
 

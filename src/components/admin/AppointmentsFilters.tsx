@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Search, Filter, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import type { IService } from '@/types';
+import type { IService } from "@/types";
+import { Filter, Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface AppointmentsFiltersProps {
   services: IService[];
@@ -11,7 +11,7 @@ interface AppointmentsFiltersProps {
 
 export interface FilterValues {
   date?: string;
-  status?: 'SCHEDULED' | 'CONFIRMED' | 'COMPLETED' | 'CANCELED';
+  status?: "SCHEDULED" | "CONFIRMED" | "COMPLETED" | "CANCELED";
   serviceId?: string;
   customerName?: string;
   customerPhone?: string;
@@ -24,11 +24,11 @@ export function AppointmentsFilters({
 }: AppointmentsFiltersProps) {
   const { watch, reset, register } = useForm<FilterValues>({
     defaultValues: {
-      date: '',
+      date: "",
       status: undefined,
-      serviceId: '',
-      customerName: '',
-      customerPhone: '',
+      serviceId: "",
+      customerName: "",
+      customerPhone: "",
     },
   });
 
@@ -73,7 +73,7 @@ export function AppointmentsFilters({
           <input
             type="text"
             placeholder="Search by name or phone..."
-            {...register('customerName')}
+            {...register("customerName")}
             className="w-full pl-10 pr-4 py-2 bg-background border border-card rounded-lg text-sm sm:text-base text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             disabled={loading}
           />
@@ -105,13 +105,16 @@ export function AppointmentsFilters({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 p-3 sm:p-4 bg-background/50 rounded-lg border border-card">
           {/* Data */}
           <div>
-            <label htmlFor="date" className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">
+            <label
+              htmlFor="date"
+              className="block text-xs sm:text-sm font-medium text-text-secondary mb-1"
+            >
               Date
             </label>
             <input
               id="date"
               type="date"
-              {...register('date')}
+              {...register("date")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             />
@@ -119,12 +122,15 @@ export function AppointmentsFilters({
 
           {/* Status */}
           <div>
-            <label htmlFor="status" className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">
+            <label
+              htmlFor="status"
+              className="block text-xs sm:text-sm font-medium text-text-secondary mb-1"
+            >
               Status
             </label>
             <select
               id="status"
-              {...register('status')}
+              {...register("status")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             >
@@ -138,12 +144,15 @@ export function AppointmentsFilters({
 
           {/* Serviço */}
           <div>
-            <label htmlFor="service" className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">
+            <label
+              htmlFor="service"
+              className="block text-xs sm:text-sm font-medium text-text-secondary mb-1"
+            >
               Service
             </label>
             <select
               id="service"
-              {...register('serviceId')}
+              {...register("serviceId")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             >
@@ -158,14 +167,17 @@ export function AppointmentsFilters({
 
           {/* Telefone */}
           <div>
-            <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">
+            <label
+              htmlFor="phone"
+              className="block text-xs sm:text-sm font-medium text-text-secondary mb-1"
+            >
               Phone
             </label>
             <input
               id="phone"
               type="tel"
               placeholder="(XX) XXXXX-XXXX"
-              {...register('customerPhone')}
+              {...register("customerPhone")}
               className="w-full px-3 py-2 bg-card border border-card rounded-lg text-sm text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               disabled={loading}
             />
