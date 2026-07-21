@@ -4,10 +4,10 @@ import { ptBR } from 'date-fns/locale';
 import {
   AlertCircle,
   CheckCircle2,
+  Clock,
   Trash2,
   MoreVertical,
   Phone,
-  Mail,
   Loader2,
 } from 'lucide-react';
 import type { IAppointment } from '@/types';
@@ -92,12 +92,6 @@ export function AppointmentsTable({
                       <Phone size={12} className="flex-shrink-0" />
                       <span className="truncate">{appointment.customerPhone}</span>
                     </div>
-                    {appointment.customerEmail && (
-                      <div className="flex items-center gap-1 text-xs text-text-secondary sm:hidden">
-                        <Mail size={12} className="flex-shrink-0" />
-                        <span className="truncate">{appointment.customerEmail}</span>
-                      </div>
-                    )}
                     {/* Mobile: mostrar serviço aqui */}
                     <div className="sm:hidden mt-1 pt-1 border-t border-card/50">
                       <p className="font-medium text-text text-xs">
@@ -158,6 +152,24 @@ export function AppointmentsTable({
                             <AppointmentStatusBadge status={appointment.status} />
                           </div>
 
+                          {appointment.status !== 'SCHEDULED' && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onStatusChange(appointment.id, 'SCHEDULED');
+                                setOpenMenuId(null);
+                              }}
+                              disabled={loadingActionId === appointment.id}
+                              className="w-full px-4 py-2 text-left text-xs sm:text-sm text-text hover:bg-background/50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                            >
+                              {loadingActionId === appointment.id ? (
+                                <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                <Clock size={16} className="text-text-secondary" />
+                              )}
+                              Mark Scheduled
+                            </button>
+                          )}
                           {appointment.status !== 'CONFIRMED' && (
                             <button
                               type="button"

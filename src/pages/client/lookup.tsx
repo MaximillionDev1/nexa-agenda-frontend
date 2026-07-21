@@ -359,11 +359,6 @@ export default function LookupPage() {
                         <p className="text-sm sm:text-base text-text">
                           <span className="font-medium">Telefone:</span> {appointment.customerPhone}
                         </p>
-                        {appointment.customerEmail && (
-                          <p className="text-sm sm:text-base text-text">
-                            <span className="font-medium">Email:</span> {appointment.customerEmail}
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>

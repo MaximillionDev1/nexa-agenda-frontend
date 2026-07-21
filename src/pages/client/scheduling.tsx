@@ -36,40 +36,39 @@ export default function SchedulingPage() {
     useSchedulingForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const createAppointmentMutation = useMutation<
-  IAppointment,
-  AxiosError<ErrorResponse>,
-  CreateAppointmentPayload
->({
-  mutationFn: async (data: CreateAppointmentPayload): Promise<IAppointment> => {
-    const response = await apiService.createAppointment({
-      ...data,
-    });
+  const createAppointmentMutation = useMutation<
+    IAppointment,
+    AxiosError<ErrorResponse>,
+    CreateAppointmentPayload
+  >({
+    mutationFn: async (data) => {
+      // data.appointmentDate já vem no formato "yyyy-MM-dd" (gerado por
+      // date-fns no Step2DateSelection, sem componente de horário/timezone).
+      // NÃO reprocessar via `new Date(...)` aqui: strings de data "YYYY-MM-DD"
+      // são interpretadas pelo JS como UTC meia-noite, e usar getters locais
+      // (getFullYear/getMonth/getDate) sobre esse instante pode devolver o dia
+      // anterior em timezones atrás do UTC (ex: Brasil), deslocando a data
+      // enviada ao backend em relação à data que o usuário realmente selecionou.
+      const response = await apiService.createAppointment(data);
 
-    // Garantir que sempre retorna IAppointment, nunca undefined
-    if (!response.data) {
-      throw new Error('Resposta inválida do servidor');
-    }
+      // Retornar o appointment, não a resposta inteira
+      if (!response.data) {
+        throw new Error('Resposta inválida do servidor');
+      }
 
-    return response.data;
-  },
-onSuccess: (appointment) => {
-  toast.success('Agendamento realizado com sucesso!');
-  
-  // Passar o appointment completo via state
-  navigate(`/scheduling/confirmation/${appointment.publicCode}`, {
-    state: {
-      appointment,
+      return response.data;
+    },
+    onSuccess: (appointment) => {
+      toast.success('Agendamento realizado com sucesso!');
+      // Usar publicCode do appointment retornado
+      navigate(`/scheduling/confirmation/${appointment.publicCode}`);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+        error.response?.data?.message || 'Erro ao realizar agendamento';
+      toast.error(message);
     },
   });
-},
-  onError: (error) => {
-    const axiosError = error as AxiosError<ErrorResponse>;
-    const message =
-      axiosError?.response?.data?.message || 'Erro ao realizar agendamento';
-    toast.error(message);
-  },
-});
 
   const handleStep1Submit = () => {
     if (!formData.serviceId) {

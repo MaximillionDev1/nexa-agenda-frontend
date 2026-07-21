@@ -56,7 +56,7 @@ export interface ICreateAppointmentRequest {
 
 export interface ILookupAppointmentRequest {
   publicCode: string;
-  customerPhone?: string;
+  customerPhone: string;
 }
 
 export interface IDashboardStats {
@@ -102,19 +102,4 @@ export interface INextAvailableSlot {
   date: string;
   time: string;
   formatted: string;
-}
-
-// Verificar se IAppointment tem customerEmail. Se não tiver, adicionar:
-
-export interface IAppointment {
-  id: string;
-  serviceId: string;
-  customerName: string;
-  customerPhone: string;
-  customerEmail?: string; // Adicionar se não existir
-  appointmentDate: string;
-  status: "SCHEDULED" | "CONFIRMED" | "COMPLETED" | "CANCELED";
-  service: IService;
-  createdAt: string;
-  updatedAt: string;
 }

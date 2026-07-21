@@ -99,30 +99,18 @@ class ApiService {
   // ============================================
 
   async createAppointment(data: ICreateAppointmentRequest): Promise<IApiResponse<IAppointment>> {
-  // Converter a data do cliente para ISO sem alterar o dia
-  const appointmentDate = new Date(data.appointmentDate);
-  
-  // Ajustar para midnight UTC do dia selecionado
-  const utcDate = new Date(
-    Date.UTC(
-      appointmentDate.getFullYear(),
-      appointmentDate.getMonth(),
-      appointmentDate.getDate(),
-      appointmentDate.getHours(),
-      appointmentDate.getMinutes(),
-      appointmentDate.getSeconds()
+    // data.appointmentDate já vem como "yyyy-MM-dd" (sem componente de horário).
+    // Enviar direto, sem reprocessar via `new Date(...)`: strings de data
+    // "YYYY-MM-DD" são interpretadas como UTC meia-noite pelo JS, e qualquer
+    // conversão usando getters locais (getFullYear/getMonth/getDate/getHours)
+    // sobre esse instante pode devolver o dia anterior em timezones atrás do
+    // UTC (ex: Brasil), deslocando a data enviada ao backend.
+    const response = await this.api.post<IApiResponse<IAppointment>>(
+      '/appointments',
+      data,
     )
-  );
-
-  const response = await this.api.post<IApiResponse<IAppointment>>(
-    '/appointments',
-    {
-      ...data,
-      appointmentDate: utcDate.toISOString(),
-    }
-  );
-  return response.data;
-}
+    return response.data
+  }
 
   async lookupAppointment(data: ILookupAppointmentRequest): Promise<IAppointment> {
     const response = await this.api.post<IApiResponse<IAppointment>>(
