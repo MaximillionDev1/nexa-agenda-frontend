@@ -68,13 +68,10 @@ export function Sidebar() {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{
-          x: isOpen ? 0 : -320,
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed md:relative left-0 top-0 h-screen w-72 bg-card border-r border-card z-40 md:z-auto flex flex-col overflow-y-auto"
+      <aside
+        className={`fixed md:relative left-0 top-0 h-screen w-72 bg-card border-r border-card z-40 md:z-auto flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
         {/* Header */}
         <div className="p-6 border-b border-card">
@@ -134,7 +131,7 @@ export function Sidebar() {
             v1.0.0 • Built with care
           </p>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }
