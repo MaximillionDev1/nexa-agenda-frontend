@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import type { AxiosError } from 'axios';
-import { CheckCircle2 } from 'lucide-react';
-import { PublicLayout } from '@/layouts/PublicLayout';
-import { useSchedulingForm } from '@/hooks/useSchedulingForm';
-import { Step1ServiceSelection } from '@/components/client/scheduling/Step1ServiceSelection';
-import { Step2DateSelection } from '@/components/client/scheduling/Step2DateSelection';
-import { Step3TimeSelection } from '@/components/client/scheduling/Step3TimeSelection';
-import { Step4PersonalData } from '@/components/client/scheduling/Step4PersonalData';
-import { Step5Review } from '@/components/client/scheduling/Step5Review';
-import { apiService } from '@/services/api';
-import type { IAppointment } from '@/types';
-import { schedulingSteps } from '@/schemas/scheduling';
+import { Step1ServiceSelection } from "@/components/client/scheduling/Step1ServiceSelection";
+import { Step2DateSelection } from "@/components/client/scheduling/Step2DateSelection";
+import { Step3TimeSelection } from "@/components/client/scheduling/Step3TimeSelection";
+import { Step4PersonalData } from "@/components/client/scheduling/Step4PersonalData";
+import { Step5Review } from "@/components/client/scheduling/Step5Review";
+import { useSchedulingForm } from "@/hooks/useSchedulingForm";
+import { PublicLayout } from "@/layouts/PublicLayout";
+import { schedulingSteps } from "@/schemas/scheduling";
+import { apiService } from "@/services/api";
+import type { IAppointment } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ErrorResponse {
   message?: string;
@@ -32,8 +32,7 @@ interface CreateAppointmentPayload {
 
 export default function SchedulingPage() {
   const navigate = useNavigate();
-  const { currentStep, formData, updateFormData, nextStep, prevStep } =
-    useSchedulingForm();
+  const { currentStep, formData, updateFormData, nextStep, prevStep } = useSchedulingForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createAppointmentMutation = useMutation<
@@ -53,26 +52,29 @@ export default function SchedulingPage() {
 
       // Retornar o appointment, não a resposta inteira
       if (!response.data) {
-        throw new Error('Resposta inválida do servidor');
+        throw new Error("Resposta inválida do servidor");
       }
 
       return response.data;
     },
     onSuccess: (appointment) => {
-      toast.success('Agendamento realizado com sucesso!');
-      // Usar publicCode do appointment retornado
-      navigate(`/scheduling/confirmation/${appointment.publicCode}`);
+      toast.success("Agendamento realizado com sucesso!");
+      // Navega já levando os dados do agendamento recém-criado, evitando
+      // uma nova busca (que exigiria telefone via lookup) só para exibir
+      // a confirmação.
+      navigate(`/scheduling/confirmation/${appointment.publicCode}`, {
+        state: { appointment },
+      });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      const message =
-        error.response?.data?.message || 'Erro ao realizar agendamento';
+      const message = error.response?.data?.message || "Erro ao realizar agendamento";
       toast.error(message);
     },
   });
 
   const handleStep1Submit = () => {
     if (!formData.serviceId) {
-      toast.error('Selecione um serviço');
+      toast.error("Selecione um serviço");
       return;
     }
     nextStep();
@@ -80,7 +82,7 @@ export default function SchedulingPage() {
 
   const handleStep2Submit = () => {
     if (!formData.appointmentDate) {
-      toast.error('Selecione uma data');
+      toast.error("Selecione uma data");
       return;
     }
     nextStep();
@@ -88,7 +90,7 @@ export default function SchedulingPage() {
 
   const handleStep3Submit = () => {
     if (!formData.startTime) {
-      toast.error('Selecione um horário');
+      toast.error("Selecione um horário");
       return;
     }
     nextStep();
@@ -107,7 +109,7 @@ export default function SchedulingPage() {
       !formData.customerName ||
       !formData.customerPhone
     ) {
-      toast.error('Dados incompletos');
+      toast.error("Dados incompletos");
       return;
     }
 
@@ -161,23 +163,19 @@ export default function SchedulingPage() {
                     disabled
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 transition-all ${
                       step.id <= currentStep
-                        ? 'bg-primary text-white'
-                        : 'bg-card text-text-secondary'
+                        ? "bg-primary text-white"
+                        : "bg-card text-text-secondary"
                     }`}
                   >
-                    {step.id < currentStep ? (
-                      <CheckCircle2 className="w-5 h-5" />
-                    ) : (
-                      step.id
-                    )}
+                    {step.id < currentStep ? <CheckCircle2 className="w-5 h-5" /> : step.id}
                   </motion.button>
                   <p className="text-xs text-center text-text-secondary">{step.title}</p>
                   {index < schedulingSteps.length - 1 && (
                     <div
                       className={`absolute top-5 left-1/2 w-12 h-1 transition-colors ${
-                        step.id < currentStep ? 'bg-primary' : 'bg-card'
+                        step.id < currentStep ? "bg-primary" : "bg-card"
                       }`}
-                      style={{ transform: 'translateX(-50%)' }}
+                      style={{ transform: "translateX(-50%)" }}
                     />
                   )}
                 </div>
@@ -299,10 +297,7 @@ export default function SchedulingPage() {
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Step4PersonalData
-                    initialData={formData}
-                    onSubmit={handleStep4Submit}
-                  />
+                  <Step4PersonalData initialData={formData} onSubmit={handleStep4Submit} />
                   <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
                     <button
                       type="button"
@@ -325,11 +320,11 @@ export default function SchedulingPage() {
                   transition={{ duration: 0.3 }}
                 >
                   <Step5Review
-                    serviceId={formData.serviceId || ''}
-                    appointmentDate={formData.appointmentDate || ''}
-                    startTime={formData.startTime || ''}
-                    customerName={formData.customerName || ''}
-                    customerPhone={formData.customerPhone || ''}
+                    serviceId={formData.serviceId || ""}
+                    appointmentDate={formData.appointmentDate || ""}
+                    startTime={formData.startTime || ""}
+                    customerName={formData.customerName || ""}
+                    customerPhone={formData.customerPhone || ""}
                     notes={formData.notes}
                     onConfirm={handleConfirmScheduling}
                     onBack={prevStep}
